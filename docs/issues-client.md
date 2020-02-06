@@ -1,0 +1,2 @@
+- distribuição horizontal ou vertical?
+- separar containers e components?
