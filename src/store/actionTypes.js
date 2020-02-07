@@ -1,0 +1,7 @@
+//Process actions
+export const LOADING_PROCESS = 'LOADING_PROCESS'
+export const CREATE_PROCESS = 'CREATE_PROCESS'
+export const READ_PROCESS = 'READ_PROCESS'
+export const UPDATE_PROCESS = 'UPDATE_PROCESS'
+export const DELETE_PROCESS = 'DELETE_PROCESS'
+export const LIST_PROCESS = 'LIST_PROCESS'
