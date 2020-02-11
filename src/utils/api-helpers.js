@@ -5,9 +5,9 @@ import siteConf from '../config/site'
 const spsApi = axios.create({ baseURL: siteConf.backend_url })
 spsApi.setToken = token => {
   if (token) {
-    this.defaults.headers.common['x-access-token'] = token
+    spsApi.defaults.headers.common['x-access-token'] = token
   } else {
-    delete this.defaults.headers.common['x-access-token']
+    delete spsApi.defaults.headers.common['x-access-token']
   }
 }
 

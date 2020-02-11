@@ -17,12 +17,12 @@ const Login = props => {
 
   const onSubmit = e => {
     e.preventDefault()
-    console.log(loginForm)
     props.loginUser(loginForm)
   }
 
   return (
     <div className="box">
+      <p>Login</p>
       <form onSubmit={onSubmit}>
         <input type="text" name="login" value={loginForm.login} onChange={onChange} />
         <input type="password" name="password" value={loginForm.password} onChange={onChange} />

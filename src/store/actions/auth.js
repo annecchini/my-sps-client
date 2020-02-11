@@ -1,6 +1,6 @@
-import { spsApi } from '../../utils/api-helpers'
 import jwt_decode from 'jwt-decode'
 
+import { spsApi } from '../../utils/api-helpers'
 import { READ_ERROR, SET_CURRENT_USER } from '../actionTypes'
 
 //Login
@@ -32,7 +32,7 @@ export const setCurrentUser = decoded => {
   }
 }
 
-const handleErrors = (err, dispatch, source) => {
+const handleErrors = (err, dispatch) => {
   let errors = {}
   if (err.response) {
     errors.serverError = true
