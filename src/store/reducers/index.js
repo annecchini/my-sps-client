@@ -1,3 +1,9 @@
 import { combineReducers } from 'redux'
 
-export default combineReducers({})
+import errorStore from './error'
+import authStore from './auth'
+
+export default combineReducers({
+  errorStore: errorStore,
+  authStore: authStore
+})
