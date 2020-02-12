@@ -10,7 +10,7 @@ export const setProcessLoading = () => {
 
 //get Process List
 export const listProcess = (options = {}) => dispatch => {
-  let url = '/v1/selectiveprocesses'
+  let url = '/v1/process'
 
   //base parameters
   if (!options.page) {
@@ -49,7 +49,7 @@ export const listProcess = (options = {}) => dispatch => {
         payload: res.data
       })
     )
-    .catch(err => err => handleErrors(err, dispatch))
+    .catch(err => handleErrors(err, dispatch))
 }
 
 const handleErrors = (err, dispatch) => {

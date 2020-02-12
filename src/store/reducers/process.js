@@ -1,11 +1,4 @@
-import {
-  LOADING_PROCESS,
-  CREATE_PROCESS,
-  READ_PROCESS,
-  UPDATE_PROCESS,
-  DELETE_PROCESS,
-  LIST_PROCESS
-} from '../actionTypes'
+import { LOADING_PROCESS, LIST_PROCESS } from '../actionTypes'
 
 const initialState = {
   loading: false,
@@ -26,7 +19,7 @@ export default function(state = initialState, action) {
         ...state,
         loading: false,
         info: action.payload.info,
-        processes: action.payload.processes
+        processes: action.payload.Processes
       }
     default:
       return state
