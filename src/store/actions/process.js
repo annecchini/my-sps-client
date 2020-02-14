@@ -1,5 +1,5 @@
 import { spsApi } from '../../utils/api-helpers'
-import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS } from '../actionTypes'
+import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS, GET_PROCESS_FILTERS } from '../actionTypes'
 
 //Process loading
 export const setProcessLoading = () => {
@@ -50,6 +50,51 @@ export const listProcess = (options = {}) => dispatch => {
       })
     )
     .catch(err => handleErrors(err, dispatch))
+}
+
+//get Process Filters
+export const getProcessFilters = () => dispatch => {
+  let url = '/v1/process/filters'
+  dispatch(setProcessLoading())
+  spsApi
+    .get(`${url}`)
+    .then(res => {
+      //Build filters on right format
+      const filters = res.data
+      let indexes = Object.keys(filters)
+      let state_filters = {}
+
+      for (let index of indexes) {
+        const filter = filters[index]
+        let state_filter = []
+
+        if (filter.length > 0) {
+          state_filter = filter.map(item => {
+            return { label: item.label, value: item.value, applied: false }
+          })
+        }
+
+        state_filters[index] = state_filter
+      }
+
+      dispatch({
+        type: GET_PROCESS_FILTERS,
+        payload: state_filters
+      })
+    })
+    .catch(err => {
+      dispatch({
+        type: READ_ERROR,
+        payload: err.response.data
+      })
+    })
+}
+
+export const setProcessFilters = new_filters => dispatch => {
+  dispatch({
+    type: GET_PROCESS_FILTERS,
+    payload: new_filters
+  })
 }
 
 const handleErrors = (err, dispatch) => {
