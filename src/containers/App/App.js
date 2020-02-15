@@ -7,6 +7,8 @@ import NavBar from '../Layout/NavBar'
 import Footer from '../Layout/Footer'
 import Landing from '../Landing/Landing'
 import ProcessList from '../Process/ProcessList'
+import ProcessCreate from '../Process/ProcessCreate'
+
 import Login from '../Auth/Login'
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Landing} />
             <Route exact path="/process" component={ProcessList} />
+            <Route exact path="/process/create" component={ProcessCreate} />
             <Route exact path="/login" component={Login} />
           </Switch>
           <Footer />

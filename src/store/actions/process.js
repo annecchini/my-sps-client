@@ -8,6 +8,18 @@ export const setProcessLoading = () => {
   }
 }
 
+//create Process
+export const createProcess = (processData, callbackOk) => dispatch => {
+  spsApi
+    .post('/v1/process', processData)
+    .then(res => {
+      callbackOk()
+    })
+    .catch(err => {
+      handleErrors(err, dispatch)
+    })
+}
+
 //get Process List
 export const listProcess = (options = {}) => dispatch => {
   let url = '/v1/process'
