@@ -90,7 +90,14 @@ const ProcessList = props => {
       <ul>
         {processes.map(process => {
           return (
-            <li key={process.id}>{`${process.identifier}/${process.year}-${process.course_id}-{assigment_ids}`}</li>
+            <li key={process.id}>
+              <p>{`${process.identifier}/${process.year}`}</p>
+              <p>{graduationLevelStore.byId[courseStore.byId[process.course_id].graduationLevel_id].name}</p>
+              <p>{courseStore.byId[process.course_id].name}</p>
+              <p>
+                {/* {processAssignments.byId.filter(pa=>pa.process_id === process.id).map(pa=>assignments.byId[pa.assignment_id])} */}
+              </p>
+            </li>
           )
         })}
       </ul>

@@ -55,12 +55,12 @@ export const listProcess = (options = {}) => dispatch => {
   dispatch(setProcessLoading())
   spsApi
     .get(`${url}`)
-    .then(res =>
+    .then(res => {
       dispatch({
         type: LIST_PROCESS,
         payload: res.data
       })
-    )
+    })
     .catch(err => handleErrors(err, dispatch))
 }
 

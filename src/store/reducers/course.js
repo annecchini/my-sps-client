@@ -1,9 +1,12 @@
+import _ from 'lodash'
+
 import { LOADING_COURSE, CREATE_COURSE, READ_COURSE, UPDATE_COURSE, DELETE_COURSE, LIST_COURSE } from '../actionTypes'
 import { compareByName } from '../../utils/compareBy'
 
 const initialState = {
   loading: false,
-  courses: []
+  byId: {},
+  allIds: []
 }
 
 const filterRemoveIds = ids => value => {
@@ -18,31 +21,36 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        courses: [...state.courses, action.payload].sort(compareByName)
+        byId: { ...state.byId, [action.payload.id]: action.payload },
+        allIds: { ...state.byId, [action.payload.id]: action.payload }.sort(compareByName).map(x => x.id)
       }
     case READ_COURSE:
       return {
         ...state,
         loading: false,
-        courses: [...state.courses.filter(filterRemoveIds([action.payload.id])), action.payload].sort(compareByName)
+        byId: { ...state.byId, [action.payload.id]: action.payload },
+        allIds: { ...state.byId, [action.payload.id]: action.payload }.sort(compareByName).map(x => x.id)
       }
     case UPDATE_COURSE:
       return {
         ...state,
         loading: false,
-        courses: [...state.courses.filter(filterRemoveIds([action.payload.id])), action.payload].sort(compareByName)
+        byId: { ...state.byId, [action.payload.id]: action.payload },
+        allIds: { ...state.byId, [action.payload.id]: action.payload }.sort(compareByName).map(x => x.id)
       }
     case DELETE_COURSE:
       return {
         ...state,
         loading: false,
-        courses: [...state.courses.filter(filterRemoveIds([action.payload.id]))].sort(compareByName)
+        byId: _.omit(state, action.payload),
+        allIds: _.omit(state, action.payload).sort(compareByName).map(x => x.id) //prettier-ignore
       }
     case LIST_COURSE:
       return {
         ...state,
         loading: false,
-        courses: action.payload
+        byId: { ...state, ..._.mapKeys(action.payload, 'id') },
+        allIds: { ...state, ..._.mapKeys(action.payload, 'id') }.sort(compareByName).map(x => x.id)
       }
     default:
       return state
