@@ -5,9 +5,25 @@ import { clearErrors } from '../../store/actions/error'
 import { listProcess, getProcessFilters, setProcessFilters } from '../../store/actions/process'
 import isEmpty from '../../utils/is-empty'
 import { buildFilterStrings } from '../../utils/process-helpers'
+import MultiSelectFilter from '../../components/MultiSelectFilter'
 
 const ProcessList = props => {
-  const { filters } = props.processStore
+  const { info, filters, processes } = props.processStore
+
+  const setPager = () => {
+    let pager = []
+    for (let i = 1; i <= info.numberOfPages; i++) {
+      const active = i === info.currentPage ? '*' : null
+      pager[i] = (
+        <i key={i}>
+          {i}
+          {active}
+        </i>
+      )
+    }
+    return pager
+  }
+  const pager = setPager()
 
   //componentDidMount
   useEffect(() => {
@@ -55,82 +71,32 @@ const ProcessList = props => {
     props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters) })
   }
 
+  const buildPager = (numberOfPages, currentPage, limit) => {}
+
+  const onChangePage = (page, pageSize) => {
+    props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters) })
+  }
+
   return (
     <div className="box">
       <p>Filtros</p>
-      <ul>
-        {filters.years
-          ? filters.years.map(filter => {
-              return (
-                <li key={filter.value}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      name={filter.value}
-                      checked={filter.applied}
-                      onChange={tickFilter('years', filter.value)}
-                    />{' '}
-                    {filter.label}
-                  </label>
-                </li>
-              )
-            })
-          : null}
-      </ul>
-
-      <ul>
-        {filters.graduationLevels
-          ? filters.graduationLevels.map(filter => {
-              return (
-                <li key={filter.value}>
-                  <label>
-                    <input type="checkbox" name={filter.value} checked={filter.marked} onChange={() => {}} />{' '}
-                    {filter.label}
-                  </label>
-                </li>
-              )
-            })
-          : null}
-      </ul>
-
-      <ul>
-        {filters.courses
-          ? filters.courses.map(filter => {
-              return (
-                <li key={filter.value}>
-                  <label>
-                    <input type="checkbox" name={filter.value} checked={filter.marked} onChange={() => {}} />{' '}
-                    {filter.label}
-                  </label>
-                </li>
-              )
-            })
-          : null}
-      </ul>
-
-      <ul>
-        {filters.assignments
-          ? filters.assignments.map(filter => {
-              return (
-                <li key={filter.value}>
-                  <label>
-                    <input type="checkbox" name={filter.value} checked={filter.marked} onChange={() => {}} />{' '}
-                    {filter.label}
-                  </label>
-                </li>
-              )
-            })
-          : null}
-      </ul>
-
+      <MultiSelectFilter id="years" filter={filters.years} onTick={tickFilter} />
+      <MultiSelectFilter id="graduationLevels" filter={filters.graduationLevels} onTick={tickFilter} />
+      <MultiSelectFilter id="courses" filter={filters.courses} onTick={tickFilter} />
+      <MultiSelectFilter id="assignments" filter={filters.assignments} onTick={tickFilter} />
       <input type="button" value="Limpar" onClick={clearFilters} />
 
       <p>ProcessList</p>
       <ul>
-        {props.processStore.processes.map(process => {
-          return <li key={process.id}>{`${process.identifier}/${process.year}`}</li>
+        {processes.map(process => {
+          return (
+            <li key={process.id}>{`${process.identifier}/${process.year}-${process.course_id}-{assigment_ids}`}</li>
+          )
         })}
       </ul>
+
+      <p>Pagination</p>
+      <ul>{pager}</ul>
     </div>
   )
 }

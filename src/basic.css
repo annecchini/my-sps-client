@@ -1,0 +1,13 @@
+.box {
+  border: 1px solid lightgray;
+  margin: 5px;
+  padding: 5px;
+}
+
+.box > form > div > input[type='text'] {
+  width: 100%;
+}
+
+.box > form > div > textarea {
+  width: 100%;
+}
