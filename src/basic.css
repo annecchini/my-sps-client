@@ -4,7 +4,16 @@
   padding: 5px;
 }
 
+.box > form > div {
+  margin: 10px;
+}
+
+.box > form > input[type='submit'] {
+  margin: 10px;
+}
+
 .box > form > div > input[type='text'] {
+  display: block;
   width: 100%;
 }
 

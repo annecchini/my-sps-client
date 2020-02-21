@@ -11,7 +11,6 @@ export const setGraduationLevelLoading = () => {
 
 //read GRADUATIONLEVEL
 export const readGraduationLevel = (id, options = {}) => dispatch => {
-  console.log('readGraduationLevel')
   dispatch(setGraduationLevelLoading())
   spsApi
     .get(`/v1/graduationLevel/${id}`)
