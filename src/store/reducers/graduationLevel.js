@@ -1,5 +1,12 @@
 import _ from 'lodash'
-import { LOADING_COURSE, CREATE_COURSE, READ_COURSE, UPDATE_COURSE, DELETE_COURSE, LIST_COURSE } from '../actionTypes'
+import {
+  LOADING_GRADUATIONLEVEL,
+  CREATE_GRADUATIONLEVEL,
+  READ_GRADUATIONLEVEL,
+  UPDATE_GRADUATIONLEVEL,
+  DELETE_GRADUATIONLEVEL,
+  LIST_GRADUATIONLEVEL
+} from '../actionTypes'
 
 const initialState = {
   loading: false,
@@ -34,9 +41,9 @@ const resetList = newList => {
 export default function(state = initialState, action) {
   let newState
   switch (action.type) {
-    case LOADING_COURSE:
+    case LOADING_GRADUATIONLEVEL:
       return { ...state, loading: true }
-    case CREATE_COURSE:
+    case CREATE_GRADUATIONLEVEL:
       newState = putItem(state, action.payload)
       return {
         ...state,
@@ -44,7 +51,7 @@ export default function(state = initialState, action) {
         byId: newState.byId,
         allIds: newState.allIds.sort(sortAllIdsByName(newState.byId))
       }
-    case READ_COURSE:
+    case READ_GRADUATIONLEVEL:
       newState = putItem(state, action.payload)
       return {
         ...state,
@@ -52,7 +59,7 @@ export default function(state = initialState, action) {
         byId: newState.byId,
         allIds: newState.allIds.sort(sortAllIdsByName(newState.byId))
       }
-    case UPDATE_COURSE:
+    case UPDATE_GRADUATIONLEVEL:
       newState = putItem(state, action.payload)
       return {
         ...state,
@@ -60,7 +67,7 @@ export default function(state = initialState, action) {
         byId: newState.byId,
         allIds: newState.allIds.sort(sortAllIdsByName(newState.byId))
       }
-    case DELETE_COURSE:
+    case DELETE_GRADUATIONLEVEL:
       newState = removeItem(state, action.payload)
       return {
         ...state,
@@ -68,7 +75,7 @@ export default function(state = initialState, action) {
         byId: newState.byId,
         allIds: newState.allIds.sort(sortAllIdsByName(newState.byId))
       }
-    case LIST_COURSE:
+    case LIST_GRADUATIONLEVEL:
       newState = resetList(action.payload)
       return {
         ...state,

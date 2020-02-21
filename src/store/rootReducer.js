@@ -4,10 +4,12 @@ import errorStore from './reducers/error'
 import authStore from './reducers/auth'
 import processStore from './reducers/process'
 import courseStore from './reducers/course'
+import graduationLevelStore from './reducers/graduationLevel'
 
 export default combineReducers({
   errorStore: errorStore,
   authStore: authStore,
   processStore: processStore,
-  courseStore: courseStore
+  courseStore: courseStore,
+  graduationLevelStore: graduationLevelStore
 })

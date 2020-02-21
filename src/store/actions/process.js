@@ -1,5 +1,6 @@
 import { spsApi } from '../../utils/api-helpers'
 import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS, GET_PROCESS_FILTERS } from '../actionTypes'
+import { readCourse } from '../actions/course'
 
 //Process loading
 export const setProcessLoading = () => {
@@ -23,6 +24,7 @@ export const createProcess = (processData, callbackOk) => dispatch => {
 //get Process List
 export const listProcess = (options = {}) => dispatch => {
   let url = '/v1/process'
+  const includeCourses = options.course ? options.course : true
 
   //base parameters
   if (!options.page) {
@@ -60,6 +62,14 @@ export const listProcess = (options = {}) => dispatch => {
         type: LIST_PROCESS,
         payload: res.data
       })
+
+      //get course for each process
+      if (includeCourses) {
+        const courseIds = [...new Set(res.data.Processes.map(pr => pr.course_id))]
+        courseIds.map(courseId => {
+          dispatch(readCourse(courseId))
+        })
+      }
     })
     .catch(err => handleErrors(err, dispatch))
 }

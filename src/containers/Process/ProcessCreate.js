@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { clearErrors } from '../../store/actions/error'
 import { createProcess } from '../../store/actions/process'
 import { convertErrorsFormat } from '../../utils/error-helpers'
+import { listCourse } from '../../store/actions/course'
 
 const ProcessCreate = props => {
   const { errorStore } = props
@@ -15,6 +16,7 @@ const ProcessCreate = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
+    props.listCourse()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   //Pegar errors do store (onPropsUpdate)
@@ -88,7 +90,8 @@ const mapStateToProps = state => ({
 //Put actions on props
 const mapActionsToProps = {
   clearErrors,
-  createProcess
+  createProcess,
+  listCourse
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ProcessCreate)
