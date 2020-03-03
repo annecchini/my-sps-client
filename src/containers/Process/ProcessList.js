@@ -71,11 +71,11 @@ const ProcessList = props => {
     props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters) })
   }
 
-  const buildPager = (numberOfPages, currentPage, limit) => {}
+  // const buildPager = (numberOfPages, currentPage, limit) => {}
 
-  const onChangePage = (page, pageSize) => {
-    props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters) })
-  }
+  // const onChangePage = (page, pageSize) => {
+  //   props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters) })
+  // }
 
   return (
     <div className="box">

@@ -1,15 +1,34 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import store from '../../store/store'
+import jwt_decode from 'jwt-decode'
 
+import store from '../../store/store'
+import { setCurrentUser } from '../../store/actions/auth'
 import NavBar from '../Layout/NavBar'
 import Footer from '../Layout/Footer'
 import Landing from '../Landing/Landing'
 import ProcessList from '../Process/ProcessList'
 import ProcessCreate from '../Process/ProcessCreate'
-
 import Login from '../Auth/Login'
+import Dashboard from '../Profile/Dashboard'
+
+import { logoutUser } from '../../store/actions/auth'
+import { setSpsApiToken } from '../../utils/api-helpers'
+
+//Check token
+if (localStorage.token && typeof localStorage.token !== 'undefined') {
+  //decode and load authStore
+  const decoded = jwt_decode(localStorage.token)
+  store.dispatch(setCurrentUser(decoded))
+  setSpsApiToken(localStorage.token)
+
+  //check for expired token
+  const currentTime = Date.now() / 1000
+  if (decoded.exp < currentTime) {
+    store.dispatch(logoutUser())
+  }
+}
 
 function App() {
   return (
@@ -22,6 +41,7 @@ function App() {
             <Route exact path="/process" component={ProcessList} />
             <Route exact path="/process/create" component={ProcessCreate} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/dashboard" component={Dashboard} />
           </Switch>
           <Footer />
         </div>

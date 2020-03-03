@@ -1,31 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 
 import { loginUser } from '../../store/actions/auth'
+import TextField from '../../components/TextField'
 
 const Login = props => {
-  const initialLoginForm = { login: '', password: '' }
-  const [loginForm, setLoginForm] = useState(initialLoginForm)
-
-  //Limpar errors
-  useEffect(() => {}, [])
+  const initialLoginData = { login: '', password: '' }
+  const [loginData, setLoginData] = useState(initialLoginData)
+  const errors = {}
 
   const onChange = e => {
     e.preventDefault()
-    setLoginForm({ ...loginForm, [e.target.name]: e.target.value })
+    setLoginData({ ...loginData, [e.target.name]: e.target.value })
   }
 
   const onSubmit = e => {
     e.preventDefault()
-    props.loginUser(loginForm)
+    props.loginUser(loginData)
   }
 
   return (
     <div className="box">
       <p>Login</p>
       <form onSubmit={onSubmit}>
-        <input type="text" name="login" value={loginForm.login} onChange={onChange} />
-        <input type="password" name="password" value={loginForm.password} onChange={onChange} />
+        <TextField
+          label="Login"
+          type="text"
+          name="login"
+          value={loginData.login}
+          onChange={onChange}
+          error={errors.login}
+        />
+        <TextField
+          label="Senha"
+          type="password"
+          name="password"
+          value={loginData.password}
+          onChange={onChange}
+          error={errors.password}
+        />
         <input type="submit" />
       </form>
     </div>

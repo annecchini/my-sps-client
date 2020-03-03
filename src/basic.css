@@ -17,6 +17,16 @@
   width: 100%;
 }
 
+.box > form > div > select {
+  display: block;
+  width: 100%;
+}
+
+.box > form > div > input[type='password'] {
+  display: block;
+  width: 100%;
+}
+
 .box > form > div > textarea {
   width: 100%;
 }

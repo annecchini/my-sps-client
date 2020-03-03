@@ -1,6 +1,6 @@
 import jwt_decode from 'jwt-decode'
 
-import { spsApi } from '../../utils/api-helpers'
+import { spsApi, setSpsApiToken } from '../../utils/api-helpers'
 import { READ_ERROR, SET_CURRENT_USER } from '../actionTypes'
 
 //Login
@@ -14,7 +14,7 @@ export const loginUser = userData => dispatch => {
       localStorage.setItem('token', access_token)
 
       //set token for axios to send requests with (Autorization = token) header
-      spsApi.setToken(access_token)
+      setSpsApiToken(access_token)
 
       //decode token to get user data && dispatch action to set user
       const decoded = jwt_decode(access_token)
@@ -22,6 +22,13 @@ export const loginUser = userData => dispatch => {
       dispatch(setCurrentUser(decoded))
     })
     .catch(err => handleErrors(err, dispatch))
+}
+
+//Log user out
+export const logoutUser = () => dispatch => {
+  localStorage.removeItem('token')
+  setSpsApiToken()
+  dispatch(setCurrentUser({}))
 }
 
 //Set User on auth

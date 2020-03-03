@@ -1,4 +1,5 @@
 import { spsApi } from '../../utils/api-helpers'
+import axios from 'axios'
 import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS, GET_PROCESS_FILTERS } from '../actionTypes'
 import { readCourse } from '../actions/course'
 
@@ -11,6 +12,9 @@ export const setProcessLoading = () => {
 
 //create Process
 export const createProcess = (processData, callbackOk) => dispatch => {
+  console.log(spsApi.defaults.headers.common['x-access-token'])
+  console.log(axios.defaults.headers.common['x-access-token'])
+
   spsApi
     .post('/v1/process', processData)
     .then(res => {
@@ -68,6 +72,7 @@ export const listProcess = (options = {}) => dispatch => {
         const courseIds = [...new Set(res.data.Processes.map(pr => pr.course_id))]
         courseIds.map(courseId => {
           dispatch(readCourse(courseId))
+          return null
         })
       }
     })

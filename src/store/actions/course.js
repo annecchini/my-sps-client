@@ -47,6 +47,7 @@ export const listCourse = (options = {}) => dispatch => {
         const graduationLevelIds = [...new Set(res.data.map(course => course.graduationLevel_id))]
         graduationLevelIds.map(graduationLevelId => {
           dispatch(readGraduationLevel(graduationLevelId))
+          return null
         })
       }
     })

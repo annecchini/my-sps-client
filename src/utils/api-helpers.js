@@ -3,7 +3,8 @@ import axios from 'axios'
 import siteConf from '../config/site'
 
 const spsApi = axios.create({ baseURL: siteConf.backend_url })
-spsApi.setToken = token => {
+
+const setSpsApiToken = token => {
   if (token) {
     spsApi.defaults.headers.common['x-access-token'] = token
   } else {
@@ -11,4 +12,4 @@ spsApi.setToken = token => {
   }
 }
 
-export { spsApi }
+export { spsApi, setSpsApiToken }

@@ -5,13 +5,17 @@ import { clearErrors } from '../../store/actions/error'
 import { createProcess } from '../../store/actions/process'
 import { convertErrorsFormat } from '../../utils/error-helpers'
 import { listCourse } from '../../store/actions/course'
+import TextField from '../../components/TextField'
+import TextAreaField from '../../components/TextAreaField'
+import SelectField from '../../components/SelectField'
+import { convertStoreToOptions } from '../../utils/store-helpers'
 
 const ProcessCreate = props => {
   const { errorStore } = props
-  const initialCreateData = { identifier: '', year: '', course_id: '', descrition: '', visible: false }
+  const initialCreateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
   const [createData, setCreateData] = useState(initialCreateData)
   const [errors, setErrors] = useState({})
-  const courses = props.courseStore
+  const courseOptions = convertStoreToOptions(props.courseStore)
 
   //componentDidMount
   useEffect(() => {
@@ -35,6 +39,10 @@ const ProcessCreate = props => {
     setCreateData({ ...createData, [e.target.name]: e.target.value })
   }
 
+  const onCheck = e => {
+    setCreateData({ ...createData, [e.target.name]: !createData[e.target.name] })
+  }
+
   const onSubmit = e => {
     e.preventDefault()
     props.createProcess(createData, () => {
@@ -42,36 +50,46 @@ const ProcessCreate = props => {
     })
   }
 
-  const info = null
-
   return (
     <div className="box">
       <p>ProcessCreate</p>
       <form onSubmit={onSubmit}>
-        <div>
-          <label>Identificador</label>
-          <input type="text" name="identifier" value={createData.identifier} onChange={onChange} />
-          {info && <small>{info}</small>}
-          {errors.identifier && <small>{errors.identifier}</small>}
-        </div>
+        <TextField
+          label="Identificador"
+          type="text"
+          name="identifier"
+          value={createData.identifier}
+          onChange={onChange}
+          error={errors.identifier}
+        />
+
+        <TextField
+          label="Ano"
+          type="text"
+          name="year"
+          value={createData.year}
+          onChange={onChange}
+          error={errors.year}
+        />
+
+        <SelectField
+          label="Curso"
+          name="course_id"
+          value={createData.course_id}
+          onChange={onChange}
+          options={courseOptions}
+        />
+
+        <TextAreaField
+          label="Descrição"
+          name="description"
+          value={createData.description}
+          onChange={onChange}
+          error={errors.description}
+        />
 
         <div>
-          <label>Ano</label>
-          <input type="text" name="year" value={createData.year} onChange={onChange} />
-        </div>
-
-        <div>
-          <label>Curso</label>
-          <input type="text" name="course_id" value={createData.course_id} onChange={onChange} />
-        </div>
-
-        <div>
-          <label>Descrição</label>
-          <textarea name="descrition" value={createData.description} onChange={onChange} />
-        </div>
-
-        <div>
-          <input type="checkbox" name="visible" value={createData.visible} onChange={onChange} />
+          <input type="checkbox" name="visible" value={createData.visible} onChange={onCheck} />
           <label>Visível</label>
         </div>
 
