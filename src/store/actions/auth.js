@@ -4,7 +4,7 @@ import { spsApi, setSpsApiToken } from '../../utils/api-helpers'
 import { READ_ERROR, SET_CURRENT_USER } from '../actionTypes'
 
 //Login
-export const loginUser = userData => dispatch => {
+export const loginUser = (userData, callback_ok) => dispatch => {
   spsApi
     .post('/v1/auth', userData)
     .then(res => {
@@ -20,6 +20,7 @@ export const loginUser = userData => dispatch => {
       const decoded = jwt_decode(access_token)
 
       dispatch(setCurrentUser(decoded))
+      callback_ok()
     })
     .catch(err => handleErrors(err, dispatch))
 }

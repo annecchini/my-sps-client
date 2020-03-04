@@ -24,3 +24,10 @@ export const buildFilterStrings = state_filters => {
 
   return string_filters
 }
+
+export const convertIdArrayToString = ids => {
+  const reducer = (acc, curr, idx, src) => {
+    return acc === '' ? `${curr}` : `${acc},${curr}`
+  }
+  return ids.reduce(reducer, '')
+}

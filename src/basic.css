@@ -30,3 +30,7 @@
 .box > form > div > textarea {
   width: 100%;
 }
+
+.box > ul > li > p > span {
+  margin-left: 10px;
+}

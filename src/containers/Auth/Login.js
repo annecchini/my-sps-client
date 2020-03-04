@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import { loginUser } from '../../store/actions/auth'
@@ -8,6 +8,20 @@ const Login = props => {
   const initialLoginData = { login: '', password: '' }
   const [loginData, setLoginData] = useState(initialLoginData)
   const errors = {}
+
+  //componentDidMount && after loginUser
+  const { isAuthenticated } = props.authStore
+  const { prevLocation } = props.location
+  const { history } = props
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (prevLocation) {
+        history.push(prevLocation.from.pathname)
+      } else {
+        history.push('/dashboard')
+      }
+    }
+  }, [isAuthenticated, prevLocation, history])
 
   const onChange = e => {
     e.preventDefault()

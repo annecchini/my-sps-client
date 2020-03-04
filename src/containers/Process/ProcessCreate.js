@@ -16,6 +16,7 @@ const ProcessCreate = props => {
   const [createData, setCreateData] = useState(initialCreateData)
   const [errors, setErrors] = useState({})
   const courseOptions = convertStoreToOptions(props.courseStore)
+  courseOptions.unshift({ label: 'Escolha o curso', value: '' })
 
   //componentDidMount
   useEffect(() => {
@@ -45,8 +46,8 @@ const ProcessCreate = props => {
 
   const onSubmit = e => {
     e.preventDefault()
-    props.createProcess(createData, () => {
-      props.history.push('/process')
+    props.createProcess(createData, process => {
+      props.history.push(`/process/${process.id}`)
     })
   }
 
@@ -78,6 +79,7 @@ const ProcessCreate = props => {
           value={createData.course_id}
           onChange={onChange}
           options={courseOptions}
+          error={errors.course_id}
         />
 
         <TextAreaField

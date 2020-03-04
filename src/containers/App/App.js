@@ -10,6 +10,7 @@ import Footer from '../Layout/Footer'
 import Landing from '../Landing/Landing'
 import ProcessList from '../Process/ProcessList'
 import ProcessCreate from '../Process/ProcessCreate'
+import ProcessRead from '../Process/ProcessRead'
 import Login from '../Auth/Login'
 import Dashboard from '../Profile/Dashboard'
 
@@ -38,8 +39,11 @@ function App() {
           <NavBar />
           <Switch>
             <Route exact path="/" component={Landing} />
+
             <Route exact path="/process" component={ProcessList} />
             <Route exact path="/process/create" component={ProcessCreate} />
+            <Route exact path="/process/:id" component={ProcessRead} />
+
             <Route exact path="/login" component={Login} />
             <Route exact path="/dashboard" component={Dashboard} />
           </Switch>

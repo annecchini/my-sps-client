@@ -1,7 +1,8 @@
 import { spsApi } from '../../utils/api-helpers'
-import axios from 'axios'
 import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS, GET_PROCESS_FILTERS } from '../actionTypes'
 import { readCourse } from '../actions/course'
+import { listAddProcessAssignment } from './processAssigment'
+import { convertIdArrayToString } from '../../utils/process-helpers'
 
 //Process loading
 export const setProcessLoading = () => {
@@ -12,13 +13,10 @@ export const setProcessLoading = () => {
 
 //create Process
 export const createProcess = (processData, callbackOk) => dispatch => {
-  console.log(spsApi.defaults.headers.common['x-access-token'])
-  console.log(axios.defaults.headers.common['x-access-token'])
-
   spsApi
     .post('/v1/process', processData)
     .then(res => {
-      callbackOk()
+      callbackOk(res.data)
     })
     .catch(err => {
       handleErrors(err, dispatch)
@@ -29,6 +27,7 @@ export const createProcess = (processData, callbackOk) => dispatch => {
 export const listProcess = (options = {}) => dispatch => {
   let url = '/v1/process'
   const includeCourses = options.course ? options.course : true
+  const includeProcessAssignemnts = options.processAssignment ? options.processAssignment : false
 
   //base parameters
   if (!options.page) {
@@ -67,13 +66,21 @@ export const listProcess = (options = {}) => dispatch => {
         payload: res.data
       })
 
-      //get course for each process
+      //get course for all processes
       if (includeCourses) {
         const courseIds = [...new Set(res.data.Processes.map(pr => pr.course_id))]
         courseIds.map(courseId => {
           dispatch(readCourse(courseId))
           return null
         })
+      }
+
+      //get processAssignments for all process
+      if (includeProcessAssignemnts) {
+        const process_ids = res.data.Processes.map(pr => pr.id)
+        const string_ids = convertIdArrayToString(process_ids)
+        const options = string_ids ? { process_ids: string_ids } : {}
+        dispatch(listAddProcessAssignment(options))
       }
     })
     .catch(err => handleErrors(err, dispatch))
