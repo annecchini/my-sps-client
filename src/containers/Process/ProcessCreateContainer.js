@@ -5,12 +5,10 @@ import { clearErrors } from '../../store/actions/error'
 import { createProcess } from '../../store/actions/process'
 import { convertErrorsFormat } from '../../utils/error-helpers'
 import { listCourse } from '../../store/actions/course'
-import TextField from '../../components/TextField'
-import TextAreaField from '../../components/TextAreaField'
-import SelectField from '../../components/SelectField'
 import { convertStoreToOptions } from '../../utils/store-helpers'
+import ProcessCreate from '../../components/Process/ProcessCreate'
 
-const ProcessCreate = props => {
+const ProcessCreateContainer = props => {
   const { errorStore } = props
   const initialCreateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
   const [createData, setCreateData] = useState(initialCreateData)
@@ -51,54 +49,17 @@ const ProcessCreate = props => {
     })
   }
 
-  return (
-    <div className="box">
-      <p>ProcessCreate</p>
-      <form onSubmit={onSubmit}>
-        <TextField
-          label="Identificador"
-          type="text"
-          name="identifier"
-          value={createData.identifier}
-          onChange={onChange}
-          error={errors.identifier}
-        />
+  const allProps = {
+    ...props,
+    createData: createData,
+    courseOptions: courseOptions,
+    onChange: onChange,
+    onSubmit: onSubmit,
+    onCheck: onCheck,
+    errors: errors
+  }
 
-        <TextField
-          label="Ano"
-          type="text"
-          name="year"
-          value={createData.year}
-          onChange={onChange}
-          error={errors.year}
-        />
-
-        <SelectField
-          label="Curso"
-          name="course_id"
-          value={createData.course_id}
-          onChange={onChange}
-          options={courseOptions}
-          error={errors.course_id}
-        />
-
-        <TextAreaField
-          label="Descrição"
-          name="description"
-          value={createData.description}
-          onChange={onChange}
-          error={errors.description}
-        />
-
-        <div>
-          <input type="checkbox" name="visible" value={createData.visible} onChange={onCheck} />
-          <label>Visível</label>
-        </div>
-
-        <input type="submit" value="Enviar" />
-      </form>
-    </div>
-  )
+  return <ProcessCreate {...allProps} />
 }
 
 //Put store-data on props
@@ -114,4 +75,4 @@ const mapActionsToProps = {
   listCourse
 }
 
-export default connect(mapStateToProps, mapActionsToProps)(ProcessCreate)
+export default connect(mapStateToProps, mapActionsToProps)(ProcessCreateContainer)

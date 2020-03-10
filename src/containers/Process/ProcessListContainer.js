@@ -12,7 +12,7 @@ import { selectProcessAssignmentByProcessId } from '../../store/selectors/proces
 import { selectCourseById } from '../../store/selectors/course'
 import { selectGraduationLevelById } from '../../store/selectors/graduationLevel'
 
-const ProcessList = props => {
+const ProcessListContainer = props => {
   const { info, filters, processes } = props.processStore
   const { courseStore, graduationLevelStore, processAssignmentStore, assignmentStore } = props
 
@@ -144,4 +144,4 @@ const mapActionsToProps = {
   setProcessFilters
 }
 
-export default connect(mapStateToProps, mapActionsToProps)(ProcessList)
+export default connect(mapStateToProps, mapActionsToProps)(ProcessListContainer)

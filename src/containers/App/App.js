@@ -8,8 +8,9 @@ import { setCurrentUser } from '../../store/actions/auth'
 import NavBar from '../Layout/NavBar'
 import Footer from '../Layout/Footer'
 import Landing from '../Landing/Landing'
-import ProcessList from '../Process/ProcessList'
-import ProcessCreate from '../Process/ProcessCreate'
+import ProcessListContainer from '../Process/ProcessListContainer'
+import ProcessListContainerV2 from '../Process/ProcessListContainerV2'
+import ProcessCreateContainer from '../Process/ProcessCreateContainer'
 import ProcessRead from '../Process/ProcessRead'
 import Login from '../Auth/Login'
 import Dashboard from '../Profile/Dashboard'
@@ -40,8 +41,9 @@ function App() {
           <Switch>
             <Route exact path="/" component={Landing} />
 
-            <Route exact path="/process" component={ProcessList} />
-            <Route exact path="/process/create" component={ProcessCreate} />
+            <Route exact path="/process" component={ProcessListContainer} />
+            <Route exact path="/processV2" component={ProcessListContainerV2} />
+            <Route exact path="/process/create" component={ProcessCreateContainer} />
             <Route exact path="/process/:id" component={ProcessRead} />
 
             <Route exact path="/login" component={Login} />
