@@ -1,3 +1,6 @@
+import { selectProcessAssignmentByProcessId_V2 } from './processAssignment'
+import { selectCourseById_V2 } from './course'
+
 export const selectProcesses = state => state.processStore.processes
 
 export const selectProcesses_V2 = (store, options = {}) => {
@@ -6,13 +9,14 @@ export const selectProcesses_V2 = (store, options = {}) => {
     const process = store.processStore_V2.byId[id]
 
     if (options.withCourse === true) {
-      process.course = store.courseStore.byId[process.course_id] ? store.courseStore.byId[process.course_id] : null
+      process.course = selectCourseById_V2(store, process.course_id, { withGraduationLevel: true })
+    }
 
-      if (process.course && options.withGraduationLevel === true) {
-        process.course.graduationLevel = store.graduationLevelStore.byId[process.course.graduationLevel_id]
-          ? store.graduationLevelStore.byId[process.course.graduationLevel_id]
-          : null
-      }
+    if (options.withAssignment === true) {
+      const processAssignments = selectProcessAssignmentByProcessId_V2(store, process.id, { withAssignment: true })
+      process.assignments = processAssignments
+        .map(pa => (pa.assignment ? pa.assignment : null))
+        .filter(assig => assig !== null)
     }
 
     return process

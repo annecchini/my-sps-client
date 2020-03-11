@@ -3,9 +3,23 @@ import { Link } from 'react-router-dom'
 
 import MultiSelectFilter from '../MultiSelectFilter'
 
-const ProcessList = props => {
-  const { filters, tickFilter, clearFilters, pager } = props
+const ProcessListV2 = props => {
+  const { filters, tickFilter, clearFilters, info, changePage } = props
   const processes = props.processes_V2
+
+  const renderPagination = info => {
+    let pagination = []
+    for (let i = 1; i <= info.numberOfPages; i++) {
+      const active = i === info.currentPage ? '*' : null
+      pagination[i] = (
+        <button key={i} onClick={() => changePage(i, 10)}>
+          {i}
+          {active}
+        </button>
+      )
+    }
+    return pagination
+  }
 
   return (
     <div className="box">
@@ -29,14 +43,15 @@ const ProcessList = props => {
                 process.course ? (process.course.graduationLevel ? process.course.graduationLevel.name : null) : null
               }`}</p>
               <p>{process.course ? process.course.name : null}</p>
+              <p>{process.assignments.map(assig => `${assig.name} `)}</p>
             </li>
           )
         })}
       </ul>
 
       <p>Paginação</p>
-      {pager}
+      {renderPagination(info)}
     </div>
   )
 }
-export default ProcessList
+export default ProcessListV2

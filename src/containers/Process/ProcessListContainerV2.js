@@ -10,22 +10,7 @@ import { selectProcesses_V2 } from '../../store/selectors/process'
 import ProcessListV2 from '../../components/Process/ProcessListV2'
 
 const ProcessListContainerV2 = props => {
-  const { info, filters } = props.processStore_V2
-
-  const setPager = () => {
-    let pager = []
-    for (let i = 1; i <= info.numberOfPages; i++) {
-      const active = i === info.currentPage ? '*' : null
-      pager[i] = (
-        <i key={i}>
-          {i}
-          {active}
-        </i>
-      )
-    }
-    return pager
-  }
-  const pager = setPager()
+  const { filters } = props.processStore_V2
 
   //componentDidMount
   useEffect(() => {
@@ -37,6 +22,10 @@ const ProcessListContainerV2 = props => {
       props.getProcessFilters_V2()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const changePage = (page, pageSize) => {
+    props.listProcess_V2({ page: page, limit: pageSize, ...buildFilterStrings(filters), processAssignment: true })
+  }
 
   const tickFilter = (id, item) => e => {
     e.preventDefault()
@@ -73,12 +62,6 @@ const ProcessListContainerV2 = props => {
     props.listProcess_V2({ page: 1, limit: 10, ...buildFilterStrings(newFilters), processAssignment: true })
   }
 
-  // const buildPager = (numberOfPages, currentPage, limit) => {}
-
-  // const onChangePage = (page, pageSize) => {
-  //   props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters) })
-  // }
-
   const allProps = {
     ...props,
     //filters
@@ -86,7 +69,7 @@ const ProcessListContainerV2 = props => {
     tickFilter: tickFilter,
     clearFilters: clearFilters,
     //pagination
-    pager: pager
+    changePage: changePage
   }
 
   return <ProcessListV2 {...allProps} />
@@ -94,9 +77,9 @@ const ProcessListContainerV2 = props => {
 
 //Put store-data on props
 const mapStateToProps = state => ({
-  processStore: state.processStore,
   processStore_V2: state.processStore_V2,
-  processes_V2: selectProcesses_V2(state, { withCourse: true, withGraduationLevel: true })
+  info: state.processStore_V2.info,
+  processes_V2: selectProcesses_V2(state, { withCourse: true, withGraduationLevel: true, withAssignment: true })
 })
 
 //Put actions on props
