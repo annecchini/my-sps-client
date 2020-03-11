@@ -10,6 +10,8 @@ const ProcessCreate = props => {
     <div className="box">
       <p>ProcessCreate</p>
       <form onSubmit={onSubmit}>
+        {errors.id ? errors.id : null}
+
         <TextField
           label="Identificador"
           type="text"
