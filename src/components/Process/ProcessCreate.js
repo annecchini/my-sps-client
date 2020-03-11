@@ -3,6 +3,7 @@ import React from 'react'
 import TextField from '../TextField'
 import TextAreaField from '../TextAreaField'
 import SelectField from '../SelectField'
+import CheckboxField from '../CheckboxField'
 
 const ProcessCreate = props => {
   const { onSubmit, createData, onChange, onCheck, errors, courseOptions } = props
@@ -47,10 +48,7 @@ const ProcessCreate = props => {
           error={errors.description}
         />
 
-        <div>
-          <input type="checkbox" name="visible" value={createData.visible} onChange={onCheck} />
-          <label>Visível</label>
-        </div>
+        <CheckboxField label="Visível" name="visible" checked={createData.visible} error={errors.visible} />
 
         <input type="submit" value="Enviar" />
       </form>
