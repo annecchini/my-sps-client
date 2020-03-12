@@ -5,8 +5,8 @@ const CheckboxField = props => {
 
   return (
     <div>
-      <label htmlFor={name}>{label}</label>
       <input type="checkbox" id={name} name={name} checked={checked} onChange={onChange} />
+      <label htmlFor={name}>{label}</label>
       {info && <small>{info}</small>}
       {error && <small>{error}</small>}
     </div>

@@ -1,2 +1,3 @@
-- distribuição horizontal ou vertical?
-- separar containers e components?
+- Ordenar da da forma certa ProcessList
+- Destruir ProcessList antigo
+- Escolher metodo de validação processCreate

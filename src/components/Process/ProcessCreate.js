@@ -11,7 +11,7 @@ const ProcessCreate = props => {
     <div className="box">
       <p>ProcessCreate</p>
       <form onSubmit={onSubmit}>
-        {errors.id ? errors.id : null}
+        <div>{errors.id ? errors.id : null}</div>
 
         <TextField
           label="Identificador"
@@ -48,7 +48,13 @@ const ProcessCreate = props => {
           error={errors.description}
         />
 
-        <CheckboxField label="Visível" name="visible" checked={createData.visible} error={errors.visible} />
+        <CheckboxField
+          label="Visível"
+          name="visible"
+          checked={createData.visible}
+          error={errors.visible}
+          onChange={onCheck}
+        />
 
         <input type="submit" value="Enviar" />
       </form>

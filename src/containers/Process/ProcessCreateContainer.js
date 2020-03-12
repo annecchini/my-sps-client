@@ -7,6 +7,7 @@ import { convertErrorsFormat } from '../../utils/error-helpers'
 import { listCourse } from '../../store/actions/course'
 import { convertStoreToOptions } from '../../utils/store-helpers'
 import ProcessCreate from '../../components/Process/ProcessCreate'
+import { validateIdentifier, validateYear, validateCourseId } from '../../validation/process'
 
 const ProcessCreateContainer = props => {
   const { errorStore } = props
@@ -35,7 +36,24 @@ const ProcessCreateContainer = props => {
 
   const onChange = e => {
     e.preventDefault()
+    let fieldError = null
+
+    switch (e.target.name) {
+      case 'identifier':
+        fieldError = validateIdentifier(e.target.value)
+        break
+      case 'year':
+        fieldError = validateYear(e.target.value)
+        break
+      case 'course_id':
+        fieldError = validateCourseId(e.target.value)
+        break
+      default:
+        break
+    }
+
     setCreateData({ ...createData, [e.target.name]: e.target.value })
+    setErrors({ ...errors, [e.target.name]: fieldError })
   }
 
   const onCheck = e => {
@@ -54,8 +72,8 @@ const ProcessCreateContainer = props => {
     createData: createData,
     courseOptions: courseOptions,
     onChange: onChange,
-    onSubmit: onSubmit,
     onCheck: onCheck,
+    onSubmit: onSubmit,
     errors: errors
   }
 
