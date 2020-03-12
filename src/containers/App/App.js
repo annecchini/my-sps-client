@@ -11,7 +11,7 @@ import Landing from '../Landing/Landing'
 import ProcessListContainer from '../Process/ProcessListContainer'
 import ProcessListContainerV2 from '../Process/ProcessListContainerV2'
 import ProcessCreateContainer from '../Process/ProcessCreateContainer'
-import ProcessRead from '../Process/ProcessRead'
+import ProcessReadContainer from '../Process/ProcessReadContainer'
 import Login from '../Auth/Login'
 import Dashboard from '../Profile/Dashboard'
 
@@ -44,7 +44,7 @@ function App() {
             <Route exact path="/process" component={ProcessListContainer} />
             <Route exact path="/processV2" component={ProcessListContainerV2} />
             <Route exact path="/process/create" component={ProcessCreateContainer} />
-            <Route exact path="/process/:id" component={ProcessRead} />
+            <Route exact path="/process/read/:id" component={ProcessReadContainer} />
 
             <Route exact path="/login" component={Login} />
             <Route exact path="/dashboard" component={Dashboard} />

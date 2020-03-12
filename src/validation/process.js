@@ -1,4 +1,3 @@
-'use strict'
 const Validator = require('validator')
 
 const validateIdentifier = (value, mode, item) => {
@@ -26,11 +25,11 @@ const validateYear = (value, mode, item) => {
 
   //value is a year
   if (typeof value !== 'undefined' && !Validator.matches(value, /^\d{4}$/)) {
-    return 'Formato inválido. Deve ser um ano no formato AAAA'
+    return 'Formato inválido. Deve ser um ano no formato AAAA.'
   }
 }
 
-const validateCourseId = async (value, mode, item) => {
+const validateCourseId = (value, mode, item) => {
   //value exists and its necessary
   if (typeof value === 'undefined' && mode === 'create') {
     return 'Este campo é necessário.'
@@ -42,13 +41,4 @@ const validateCourseId = async (value, mode, item) => {
   }
 }
 
-const validateVisible = (value, mode, item) => {
-  //value is booblean
-  if (typeof value !== 'undefined') {
-    if ((value != true && value != false) || value === '') {
-      return 'Formato inválido.'
-    }
-  }
-}
-
-module.exports = { validateIdentifier, validateYear, validateCourseId, validateVisible }
+module.exports = { validateIdentifier, validateYear, validateCourseId }

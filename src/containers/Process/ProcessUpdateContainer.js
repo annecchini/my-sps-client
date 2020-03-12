@@ -4,8 +4,8 @@ import _ from 'lodash'
 
 import { clearErrors } from '../../store/actions/error'
 import { createProcess } from '../../store/actions/process'
-import { listCourse } from '../../store/actions/course'
 import { convertErrorsFormat } from '../../utils/error-helpers'
+import { listCourse } from '../../store/actions/course'
 import { convertStoreToOptions } from '../../utils/store-helpers'
 import ProcessCreate from '../../components/Process/ProcessCreate'
 import { validateIdentifier, validateYear, validateCourseId } from '../../validation/process'
@@ -21,7 +21,7 @@ const ProcessCreateContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.listCourse()
+    props.readProcess(props.match.params.id)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   //Pegar errors do store (onPropsUpdate)
@@ -91,8 +91,8 @@ const mapStateToProps = state => ({
 //Put actions on props
 const mapActionsToProps = {
   clearErrors,
-  listCourse,
-  createProcess
+  createProcess,
+  listCourse
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ProcessCreateContainer)

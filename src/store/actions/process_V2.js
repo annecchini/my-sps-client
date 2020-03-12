@@ -1,5 +1,12 @@
 import { spsApi } from '../../utils/api-helpers'
-import { READ_ERROR, LIST_PROCESS_V2, LOADING_PROCESS_V2, GET_PROCESS_FILTERS_V2 } from '../actionTypes'
+import {
+  READ_ERROR,
+  LOADING_PROCESS_V2,
+  CREATE_PROCESS_V2,
+  READ_PROCESS_V2,
+  LIST_PROCESS_V2,
+  GET_PROCESS_FILTERS_V2
+} from '../actionTypes'
 import { readCourse } from '../actions/course'
 import { listAddProcessAssignment } from './processAssigment'
 import { convertIdArrayToString } from '../../utils/process-helpers'
@@ -12,15 +19,38 @@ export const setProcessLoading_V2 = () => {
 }
 
 //create Process
-export const createProcess_V2 = (processData, callbackOk) => dispatch => {
+export const createProcess_V2 = (processData, options = {}) => dispatch => {
   spsApi
     .post('/v1/process', processData)
     .then(res => {
-      callbackOk(res.data)
+      dispatch({ type: CREATE_PROCESS_V2, payload: res.data })
+
+      //run callbackOK
+      if (options.callbackOk) options.callbackOk(res.data)
     })
-    .catch(err => {
-      handleErrors(err, dispatch)
+    .catch(err => handleErrors(err, dispatch))
+}
+
+//processRead
+export const readProcess = (id, options = {}) => dispatch => {
+  options.withCourse = options.withCourse ? options.withCourse : true
+  options.ProcessAssignment = options.ProcessAssignment ? options.ProcessAssignment : true
+
+  spsApi
+    .get(`/v1/process/${id}`)
+    .then(res => {
+      dispatch({ type: READ_PROCESS_V2, payload: res.data })
+
+      //get course
+      if (options.withCourse === true) dispatch(readCourse(res.data.course_id))
+
+      //get processAssignments / assignments
+      if (options.withProcessAssignment === true) dispatch(listAddProcessAssignment({ process_ids: [res.data.id] }))
+
+      //run callBack
+      if (options.callbackOk) options.callbackOk(res.data)
     })
+    .catch(err => handleErrors(err, dispatch))
 }
 
 //get Process List
@@ -30,32 +60,20 @@ export const listProcess_V2 = (options = {}) => dispatch => {
   const includeProcessAssignemnts = options.processAssignment ? options.processAssignment : false
 
   //base parameters
-  if (!options.page) {
-    options.page = 1
-  }
+  if (!options.page) options.page = 1
   url = url + `?page=${options.page}`
 
-  if (!options.limit) {
-    options.limit = 10
-  }
+  if (!options.limit) options.limit = 10
   url = url + `&limit=${options.limit}`
 
   //filters
-  if (options.years) {
-    url = url + `&years=${options.years}`
-  }
+  if (options.years) url = url + `&years=${options.years}`
 
-  if (options.courses) {
-    url = url + `&courses=${options.courses}`
-  }
+  if (options.courses) url = url + `&courses=${options.courses}`
 
-  if (options.graduationLevels) {
-    url = url + `&graduationLevels=${options.graduationLevels}`
-  }
+  if (options.graduationLevels) url = url + `&graduationLevels=${options.graduationLevels}`
 
-  if (options.assignments) {
-    url = url + `&assignments=${options.assignments}`
-  }
+  if (options.assignments) url = url + `&assignments=${options.assignments}`
 
   dispatch(setProcessLoading_V2())
   spsApi

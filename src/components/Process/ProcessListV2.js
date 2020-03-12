@@ -38,12 +38,18 @@ const ProcessListV2 = props => {
         {processes.map(process => {
           return (
             <li key={process.id} className="list-group-item">
-              <p>{`${process.identifier}/${process.year}`}</p>
+              <p>
+                <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
+              </p>
               <p>{`${
                 process.course ? (process.course.graduationLevel ? process.course.graduationLevel.name : null) : null
               }`}</p>
               <p>{process.course ? process.course.name : null}</p>
-              <p>{process.assignments.map(assig => `${assig.name} `)}</p>
+              <p>
+                {process.assignments.length > 0
+                  ? process.assignments.map(assig => `${assig.name} `)
+                  : 'Sem atribuições associadas'}
+              </p>
             </li>
           )
         })}
