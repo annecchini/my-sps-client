@@ -1,3 +1,3 @@
-- Ordenar da da forma certa ProcessList
 - Destruir ProcessList antigo
-- Escolher metodo de validação processCreate
+- crud Process
+- Em Process(create,update) mostrar apenas os cursos permitidos para o usuário logado.
