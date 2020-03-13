@@ -2,22 +2,34 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import { clearErrors } from '../../store/actions/error'
-import { readProcess } from '../../store/actions/process'
-import ProcessRead from '../../components/Process/ProcessRead'
+import { readProcess, deleteProcess } from '../../store/actions/process'
+import ProcessDelete from '../../components/Process/ProcessDelete'
 import { selectProcessById } from '../../store/selectors/process'
 
 const ProcessCreateContainer = props => {
+  const process = props.process || {}
+
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
     props.readProcess(props.match.params.id)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const allProps = {
-    ...props
+  const onSubmit = e => {
+    e.preventDefault()
+    props.deleteProcess(process.id, {
+      callbackOk: () => {
+        props.history.push(`/process`)
+      }
+    })
   }
 
-  return <ProcessRead {...allProps} />
+  const allProps = {
+    ...props,
+    onSubmit: onSubmit
+  }
+
+  return <ProcessDelete {...allProps} />
 }
 
 //Put store-data on props
@@ -29,7 +41,8 @@ const mapStateToProps = (state, ownProps) => ({
 //Put actions on props
 const mapActionsToProps = {
   clearErrors,
-  readProcess
+  readProcess,
+  deleteProcess
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ProcessCreateContainer)

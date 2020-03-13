@@ -1,3 +1,4 @@
-- Destruir ProcessList antigo
-- crud Process
 - Em Process(create,update) mostrar apenas os cursos permitidos para o usuário logado.
+- Criar "Dashboard", criar "Perfil", "Editar usuário".
+- Criar mecanismos de permissão de exibição. (ProcetectRoute, CheckPermission)
+- Criar NotFound page

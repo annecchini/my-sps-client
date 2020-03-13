@@ -10,9 +10,9 @@ export default class ProcessRoutes extends Component {
       <Switch>
         <Route exact path={`${this.props.match.path}`} component={ProcessListContainer} />
         <Route exact path={`${this.props.match.path}/create`} component={ProcessCreateContainer} />
-        <Route exact path={`${this.props.match.path}/read/:id`} component={ProcessCreateContainer} />
-        <Route exact path={`${this.props.match.path}/update/:id`} component={ProcessCreateContainer} />
-        <Route exact path={`${this.props.match.path}/delete/:id`} component={ProcessCreateContainer} />
+        <Route exact path={`${this.props.match.path}/read/:id`} component={ProcessReadContainer} />
+        <Route exact path={`${this.props.match.path}/update/:id`} component={ProcessUpdateContainer} />
+        <Route exact path={`${this.props.match.path}/delete/:id`} component={ProcessDeleteContainer} />
       </Switch>
     )
   }

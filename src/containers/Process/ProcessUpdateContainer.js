@@ -3,17 +3,19 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { clearErrors } from '../../store/actions/error'
-import { createProcess } from '../../store/actions/process'
+import { updateProcess, readProcess } from '../../store/actions/process'
 import { convertErrorsFormat } from '../../utils/error-helpers'
 import { listCourse } from '../../store/actions/course'
 import { convertStoreToOptions } from '../../utils/store-helpers'
-import ProcessCreate from '../../components/Process/ProcessCreate'
-import { validateIdentifier, validateYear, validateCourseId } from '../../validation/process'
+import ProcessUpdate from '../../components/Process/ProcessUpdate'
+import { validateIdentifier, validateYear, validateCourseId, validateBody } from '../../validation/process'
+import { selectProcessById } from '../../store/selectors/process'
 
 const ProcessCreateContainer = props => {
+  const process = props.process || {}
   const { errorStore } = props
-  const initialCreateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
-  const [createData, setCreateData] = useState(initialCreateData)
+  const initialUpdateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
+  const [updateData, setUpdateData] = useState(initialUpdateData)
   const [errors, setErrors] = useState({})
   const courseOptions = convertStoreToOptions(props.courseStore)
   courseOptions.unshift({ label: 'Escolha o curso', value: '' })
@@ -21,8 +23,20 @@ const ProcessCreateContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.readProcess(props.match.params.id)
+    props.listCourse()
+    props.readProcess(props.match.params.id, { withCourse: false, withAssignment: false })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  //Carregar valores no formulário
+  useEffect(() => {
+    setUpdateData({
+      identifier: process.identifier ? process.identifier : '',
+      year: process.year ? process.year : '',
+      course_id: process.course_id ? process.course_id : '',
+      description: process.description ? process.description : '',
+      visible: process.visible ? process.visible : false
+    })
+  }, [process])
 
   //Pegar errors do store (onPropsUpdate)
   useEffect(() => {
@@ -41,37 +55,46 @@ const ProcessCreateContainer = props => {
 
     switch (e.target.name) {
       case 'identifier':
-        fieldError = validateIdentifier(e.target.value, 'create')
+        fieldError = validateIdentifier(e.target.value, 'update')
         break
       case 'year':
-        fieldError = validateYear(e.target.value, 'create')
+        fieldError = validateYear(e.target.value, 'update')
         break
       case 'course_id':
-        fieldError = validateCourseId(e.target.value, 'create')
+        fieldError = validateCourseId(e.target.value, 'update')
         break
       default:
         break
     }
 
-    setCreateData({ ...createData, [e.target.name]: e.target.value })
+    setUpdateData({ ...updateData, [e.target.name]: e.target.value })
     if (fieldError) setErrors({ ...errors, [e.target.name]: fieldError })
     else setErrors(_.omit(errors, e.target.name))
   }
 
   const onCheck = e => {
-    setCreateData({ ...createData, [e.target.name]: !createData[e.target.name] })
+    setUpdateData({ ...updateData, [e.target.name]: !updateData[e.target.name] })
   }
 
   const onSubmit = e => {
     e.preventDefault()
-    props.createProcess(createData, process => {
-      props.history.push(`/process/${process.id}`)
-    })
+
+    const submitErrors = validateBody(updateData, 'update')
+
+    if (submitErrors) {
+      setErrors(submitErrors)
+    } else {
+      props.updateProcess(process.id, updateData, {
+        callbackOk: process => {
+          props.history.push(`/process/read/${process.id}`)
+        }
+      })
+    }
   }
 
   const allProps = {
     ...props,
-    createData: createData,
+    updateData: updateData,
     courseOptions: courseOptions,
     onChange: onChange,
     onCheck: onCheck,
@@ -79,20 +102,22 @@ const ProcessCreateContainer = props => {
     errors: errors
   }
 
-  return <ProcessCreate {...allProps} />
+  return <ProcessUpdate {...allProps} />
 }
 
 //Put store-data on props
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   errorStore: state.errorStore,
+  process: selectProcessById(state, ownProps.match.params.id, { withCourse: true, withAssignment: true }),
   courseStore: state.courseStore
 })
 
 //Put actions on props
 const mapActionsToProps = {
   clearErrors,
-  createProcess,
-  listCourse
+  updateProcess,
+  listCourse,
+  readProcess
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ProcessCreateContainer)

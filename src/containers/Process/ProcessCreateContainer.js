@@ -8,7 +8,7 @@ import { listCourse } from '../../store/actions/course'
 import { convertErrorsFormat } from '../../utils/error-helpers'
 import { convertStoreToOptions } from '../../utils/store-helpers'
 import ProcessCreate from '../../components/Process/ProcessCreate'
-import { validateIdentifier, validateYear, validateCourseId } from '../../validation/process'
+import { validateIdentifier, validateYear, validateCourseId, validateBody } from '../../validation/process'
 
 const ProcessCreateContainer = props => {
   const { errorStore } = props
@@ -64,9 +64,18 @@ const ProcessCreateContainer = props => {
 
   const onSubmit = e => {
     e.preventDefault()
-    props.createProcess(createData, process => {
-      props.history.push(`/process/${process.id}`)
-    })
+
+    const submitErrors = validateBody(createData, 'create')
+
+    if (submitErrors) {
+      setErrors(submitErrors)
+    } else {
+      props.createProcess(createData, {
+        callbackOk: process => {
+          props.history.push(`/process/read/${process.id}`)
+        }
+      })
+    }
   }
 
   const allProps = {

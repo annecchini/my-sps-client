@@ -1,6 +1,15 @@
 import { spsApi } from '../../utils/api-helpers'
-import { READ_ERROR, LIST_PROCESS, LOADING_PROCESS, GET_PROCESS_FILTERS } from '../actionTypes'
-import { readCourse } from '../actions/course'
+import {
+  READ_ERROR,
+  LOADING_PROCESS,
+  CREATE_PROCESS,
+  READ_PROCESS,
+  UPDATE_PROCESS,
+  DELETE_PROCESS,
+  LIST_PROCESS,
+  GET_PROCESS_FILTERS
+} from '../actionTypes'
+import { readCourse } from './course'
 import { listAddProcessAssignment } from './processAssigment'
 import { convertIdArrayToString } from '../../utils/process-helpers'
 
@@ -12,15 +21,64 @@ export const setProcessLoading = () => {
 }
 
 //create Process
-export const createProcess = (processData, callbackOk) => dispatch => {
+export const createProcess = (processData, options = {}) => dispatch => {
   spsApi
     .post('/v1/process', processData)
     .then(res => {
-      callbackOk(res.data)
+      dispatch({ type: CREATE_PROCESS, payload: res.data })
+
+      //run callbackOK
+      if (options.callbackOk) options.callbackOk(res.data)
     })
-    .catch(err => {
-      handleErrors(err, dispatch)
+    .catch(err => handleErrors(err, dispatch))
+}
+
+//read Process
+export const readProcess = (id, options = {}) => dispatch => {
+  options.withCourse = options.withCourse ? options.withCourse : true
+  options.ProcessAssignment = options.ProcessAssignment ? options.ProcessAssignment : true
+
+  spsApi
+    .get(`/v1/process/${id}`)
+    .then(res => {
+      dispatch({ type: READ_PROCESS, payload: res.data })
+
+      //get course
+      if (options.withCourse === true) dispatch(readCourse(res.data.course_id))
+
+      //get processAssignments / assignments
+      if (options.withProcessAssignment === true) dispatch(listAddProcessAssignment({ process_ids: [res.data.id] }))
+
+      //run callBack
+      if (options.callbackOk) options.callbackOk(res.data)
     })
+    .catch(err => handleErrors(err, dispatch))
+}
+
+//update Process
+export const updateProcess = (id, processData, options = {}) => dispatch => {
+  spsApi
+    .put(`/v1/process/${id}`, processData)
+    .then(res => {
+      dispatch({ type: UPDATE_PROCESS, payload: res.data })
+
+      //run callbackOK
+      if (options.callbackOk) options.callbackOk(res.data)
+    })
+    .catch(err => handleErrors(err, dispatch))
+}
+
+//delete Process
+export const deleteProcess = (id, options = {}) => dispatch => {
+  spsApi
+    .delete(`/v1/process/${id}`)
+    .then(res => {
+      dispatch({ type: DELETE_PROCESS, payload: id })
+
+      //run callbackOK
+      if (options.callbackOk) options.callbackOk()
+    })
+    .catch(err => handleErrors(err, dispatch))
 }
 
 //get Process List
@@ -30,41 +88,26 @@ export const listProcess = (options = {}) => dispatch => {
   const includeProcessAssignemnts = options.processAssignment ? options.processAssignment : false
 
   //base parameters
-  if (!options.page) {
-    options.page = 1
-  }
+  if (!options.page) options.page = 1
   url = url + `?page=${options.page}`
 
-  if (!options.limit) {
-    options.limit = 10
-  }
+  if (!options.limit) options.limit = 10
   url = url + `&limit=${options.limit}`
 
   //filters
-  if (options.years) {
-    url = url + `&years=${options.years}`
-  }
+  if (options.years) url = url + `&years=${options.years}`
 
-  if (options.courses) {
-    url = url + `&courses=${options.courses}`
-  }
+  if (options.courses) url = url + `&courses=${options.courses}`
 
-  if (options.graduationLevels) {
-    url = url + `&graduationLevels=${options.graduationLevels}`
-  }
+  if (options.graduationLevels) url = url + `&graduationLevels=${options.graduationLevels}`
 
-  if (options.assignments) {
-    url = url + `&assignments=${options.assignments}`
-  }
+  if (options.assignments) url = url + `&assignments=${options.assignments}`
 
   dispatch(setProcessLoading())
   spsApi
     .get(`${url}`)
     .then(res => {
-      dispatch({
-        type: LIST_PROCESS,
-        payload: res.data
-      })
+      dispatch({ type: LIST_PROCESS, payload: res.data })
 
       //get course for all processes
       if (includeCourses) {
@@ -111,24 +154,13 @@ export const getProcessFilters = () => dispatch => {
         state_filters[index] = state_filter
       }
 
-      dispatch({
-        type: GET_PROCESS_FILTERS,
-        payload: state_filters
-      })
+      dispatch({ type: GET_PROCESS_FILTERS, payload: state_filters })
     })
-    .catch(err => {
-      dispatch({
-        type: READ_ERROR,
-        payload: err.response.data
-      })
-    })
+    .catch(err => handleErrors(err, dispatch))
 }
 
 export const setProcessFilters = new_filters => dispatch => {
-  dispatch({
-    type: GET_PROCESS_FILTERS,
-    payload: new_filters
-  })
+  dispatch({ type: GET_PROCESS_FILTERS, payload: new_filters })
 }
 
 const handleErrors = (err, dispatch) => {

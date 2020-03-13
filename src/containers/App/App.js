@@ -9,9 +9,11 @@ import NavBar from '../Layout/NavBar'
 import Footer from '../Layout/Footer'
 import Landing from '../Landing/Landing'
 import ProcessListContainer from '../Process/ProcessListContainer'
-import ProcessListContainerV2 from '../Process/ProcessListContainerV2'
 import ProcessCreateContainer from '../Process/ProcessCreateContainer'
 import ProcessReadContainer from '../Process/ProcessReadContainer'
+import ProcessUpdateContainer from '../Process/ProcessUpdateContainer'
+import ProcessDeleteContainer from '../Process/ProcessDeleteContainer'
+
 import Login from '../Auth/Login'
 import Dashboard from '../Profile/Dashboard'
 
@@ -42,9 +44,10 @@ function App() {
             <Route exact path="/" component={Landing} />
 
             <Route exact path="/process" component={ProcessListContainer} />
-            <Route exact path="/processV2" component={ProcessListContainerV2} />
             <Route exact path="/process/create" component={ProcessCreateContainer} />
             <Route exact path="/process/read/:id" component={ProcessReadContainer} />
+            <Route exact path="/process/update/:id" component={ProcessUpdateContainer} />
+            <Route exact path="/process/delete/:id" component={ProcessDeleteContainer} />
 
             <Route exact path="/login" component={Login} />
             <Route exact path="/dashboard" component={Dashboard} />
