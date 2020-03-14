@@ -2,3 +2,4 @@
 - Criar "Dashboard", criar "Perfil", "Editar usuário".
 - Criar mecanismos de permissão de exibição. (ProcetectRoute, CheckPermission)
 - Criar NotFound page
+- Criar routes component para cada modulo.

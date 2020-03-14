@@ -10,7 +10,7 @@ const NavBar = props => {
     return (
       <ul>
         <li>
-          <Link to={'/login'}>Login</Link>
+          <Link to={'/auth/login'}>Login</Link>
         </li>
       </ul>
     )
@@ -20,7 +20,7 @@ const NavBar = props => {
     return (
       <ul>
         <li>
-          <Link to={'/dashboard'}>Dashboard</Link>
+          <Link to={'/auth/dashboard'}>Dashboard</Link>
         </li>
         <li>
           <button onClick={() => props.logoutUser()}>Logout</button>

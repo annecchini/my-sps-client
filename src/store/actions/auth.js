@@ -4,7 +4,7 @@ import { spsApi, setSpsApiToken } from '../../utils/api-helpers'
 import { READ_ERROR, SET_CURRENT_USER } from '../actionTypes'
 
 //Login
-export const loginUser = (userData, callback_ok) => dispatch => {
+export const loginUser = (userData, options = {}) => dispatch => {
   spsApi
     .post('/v1/auth', userData)
     .then(res => {
@@ -13,14 +13,15 @@ export const loginUser = (userData, callback_ok) => dispatch => {
       //Set token on local storage
       localStorage.setItem('token', access_token)
 
-      //set token for axios to send requests with (Autorization = token) header
-      setSpsApiToken(access_token)
-
       //decode token to get user data && dispatch action to set user
       const decoded = jwt_decode(access_token)
 
       dispatch(setCurrentUser(decoded))
-      callback_ok()
+      setSpsApiToken(access_token)
+      dispatch(readProfile())
+
+      //run callbackOk
+      if (options.callbackOk) options.callbackOk(res.data)
     })
     .catch(err => handleErrors(err, dispatch))
 }
@@ -30,7 +31,21 @@ export const logoutUser = () => dispatch => {
   localStorage.removeItem('token')
   setSpsApiToken()
   dispatch(setCurrentUser({}))
+  dispatch(clearProfile())
 }
+
+//readProfile
+export const readProfile = () => dispatch => {
+  spsApi
+    .get('/v1/auth/profile')
+    .then(res => {
+      dispatch({ type: 'READ_PROFILE', payload: res.data })
+    })
+    .catch(err => handleErrors(err, dispatch))
+}
+
+//clearProfile
+export const clearProfile = () => dispatch => {}
 
 //Set User on auth
 export const setCurrentUser = decoded => {

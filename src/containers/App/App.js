@@ -4,9 +4,9 @@ import { Provider } from 'react-redux'
 import jwt_decode from 'jwt-decode'
 
 import store from '../../store/store'
-import { setCurrentUser } from '../../store/actions/auth'
+import { setCurrentUser, readProfile } from '../../store/actions/auth'
 import NavBar from '../Layout/NavBar'
-import Footer from '../Layout/Footer'
+import Footer from '../../components/Layout/Footer'
 import Landing from '../Landing/Landing'
 import ProcessListContainer from '../Process/ProcessListContainer'
 import ProcessCreateContainer from '../Process/ProcessCreateContainer'
@@ -14,8 +14,9 @@ import ProcessReadContainer from '../Process/ProcessReadContainer'
 import ProcessUpdateContainer from '../Process/ProcessUpdateContainer'
 import ProcessDeleteContainer from '../Process/ProcessDeleteContainer'
 
-import Login from '../Auth/Login'
-import Dashboard from '../Profile/Dashboard'
+import LoginContainer from '../Auth/LoginContainer'
+import DashboardContainer from '../Auth/DashboardContainer'
+import ProfileContainer from '../Auth/ProfileContainer'
 
 import { logoutUser } from '../../store/actions/auth'
 import { setSpsApiToken } from '../../utils/api-helpers'
@@ -24,8 +25,10 @@ import { setSpsApiToken } from '../../utils/api-helpers'
 if (localStorage.token && typeof localStorage.token !== 'undefined') {
   //decode and load authStore
   const decoded = jwt_decode(localStorage.token)
+
   store.dispatch(setCurrentUser(decoded))
   setSpsApiToken(localStorage.token)
+  store.dispatch(readProfile())
 
   //check for expired token
   const currentTime = Date.now() / 1000
@@ -49,8 +52,9 @@ function App() {
             <Route exact path="/process/update/:id" component={ProcessUpdateContainer} />
             <Route exact path="/process/delete/:id" component={ProcessDeleteContainer} />
 
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/auth/login" component={LoginContainer} />
+            <Route exact path="/auth/dashboard" component={DashboardContainer} />
+            <Route exact path="/auth/profile" component={ProfileContainer} />
           </Switch>
           <Footer />
         </div>

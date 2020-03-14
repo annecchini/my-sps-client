@@ -4,6 +4,7 @@ export const CLEAR_ERROR = 'CLEAR_ERROR'
 
 //Auth actions
 export const SET_CURRENT_USER = 'SET_CURRENT_USER'
+export const READ_PROFILE = 'READ_PROFILE'
 
 //Process actions
 export const LOADING_PROCESS = 'LOADING_PROCESS'

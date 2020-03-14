@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { checkNested } from '../../utils/checkNested'
 import MultiSelectFilter from '../MultiSelectFilter'
 
-const ProcessListV2 = props => {
+const ProcessList = props => {
   const { filters, tickFilter, clearFilters, info, changePage } = props
   const processes = props.processes
 
@@ -41,10 +42,8 @@ const ProcessListV2 = props => {
               <p>
                 <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
               </p>
-              <p>{`${
-                process.course ? (process.course.graduationLevel ? process.course.graduationLevel.name : null) : null
-              }`}</p>
-              <p>{process.course ? process.course.name : null}</p>
+              <p>{checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}</p>
+              <p>{checkNested(process, 'course') ? process.course.name : null}</p>
               <p>
                 {process.assignments.length > 0
                   ? process.assignments.map(assig => `${assig.name} `)
@@ -60,4 +59,4 @@ const ProcessListV2 = props => {
     </div>
   )
 }
-export default ProcessListV2
+export default ProcessList

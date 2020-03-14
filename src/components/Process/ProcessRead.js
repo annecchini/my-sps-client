@@ -10,8 +10,8 @@ const ProcessRead = props => {
       <p>ProcessRead</p>
 
       <p>{`${process.identifier}/${process.year}`}</p>
-      <p>{checkNested(process, 'course', 'graduationLevel', 'name') ? process.course.graduationLevel.name : null}</p>
-      <p>{checkNested(process, 'course', 'name') ? process.course.name : null}</p>
+      <p>{checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}</p>
+      <p>{checkNested(process, 'course') ? process.course.name : null}</p>
       <p>
         {checkNested(process, 'assignments') && process.assignments.length > 0
           ? process.assignments.map(assig => `${assig.name} `)

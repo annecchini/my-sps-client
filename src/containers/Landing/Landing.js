@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 
 const Landing = props => {
-  useEffect(() => props.history.push('/process'))
+  const { history } = props
+  useEffect(() => history.push('/process'), [history])
   return null
 }
 
