@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { checkNested } from '../../utils/checkNested'
 
@@ -6,13 +7,17 @@ const Profile = props => {
   const { profile } = props
 
   return (
-    <div className="box">
-      <p>Dados de usuário</p>
-      <p>{checkNested(profile, 'user') ? profile.user.login : ''}</p>
-
-      <p>Dados pessoais</p>
-      <p>Ainda sem dados pessoais.</p>
-    </div>
+    <React.Fragment>
+      <div className="box">
+        <p>
+          <Link to={`/auth/profile/update/user`}>Atualizar dados de usuário</Link>
+        </p>
+      </div>
+      <div className="box">
+        <p>Dados de usuário</p>
+        <p>{checkNested(profile, 'user') ? profile.user.login : ''}</p>
+      </div>
+    </React.Fragment>
   )
 }
 export default Profile
