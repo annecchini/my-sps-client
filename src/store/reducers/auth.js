@@ -1,6 +1,6 @@
 import isEmpty from '../../utils/is-empty'
 
-import { SET_CURRENT_USER, READ_PROFILE } from '../actionTypes'
+import { SET_CURRENT_USER, READ_PROFILE, READ_PROFILE_USER, CLEAR_PROFILE } from '../actionTypes'
 
 const initialState = {
   isAuthenticated: false,
@@ -22,6 +22,17 @@ export default function(state = initialState, action) {
         ...state,
         user: action.payload.user ? action.payload.user : {},
         access: action.payload.access ? action.payload.access : []
+      }
+    case READ_PROFILE_USER:
+      return {
+        ...state,
+        user: action.payload ? action.payload : {}
+      }
+    case CLEAR_PROFILE:
+      return {
+        ...state,
+        user: {},
+        access: []
       }
     default:
       return state

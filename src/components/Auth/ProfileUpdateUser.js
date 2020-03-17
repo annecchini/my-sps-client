@@ -4,10 +4,7 @@ import TextField from '../TextField'
 import CheckboxField from '../CheckboxField'
 
 const Profile = props => {
-  const { updateData, onChange, onCheck } = props
-  const errors = {}
-  const onSubmit = () => {}
-
+  const { updateData, errors, onChange, onCheck, onSubmit } = props
   return (
     <div className="box">
       <p>Atualizar perfil - usuário</p>
@@ -16,9 +13,9 @@ const Profile = props => {
           label="Login"
           type="text"
           name="login"
-          value={updateData.identifier}
+          value={updateData.login}
           onChange={onChange}
-          error={errors.identifier}
+          error={errors.login}
         />
 
         <CheckboxField label="Alterar senha" name="changePw" checked={updateData.changePw} onChange={onCheck} />

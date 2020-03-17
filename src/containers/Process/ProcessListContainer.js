@@ -15,7 +15,7 @@ const ProcessListContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.listProcess({ processAssignment: true })
+    props.listProcess({ withProcessAssignment: true })
 
     //Baixar os filtros apenas se não os tiver.
     if (isEmpty(filters)) {
@@ -24,7 +24,7 @@ const ProcessListContainer = props => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const changePage = (page, pageSize) => {
-    props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters), processAssignment: true })
+    props.listProcess({ page: page, limit: pageSize, ...buildFilterStrings(filters), withProcessAssignment: true })
   }
 
   const tickFilter = (id, item) => e => {
@@ -40,7 +40,7 @@ const ProcessListContainer = props => {
     newFilters[id] = list
 
     props.setProcessFilters(newFilters)
-    props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters), processAssignment: true })
+    props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters), withProcessAssignment: true })
   }
 
   const clearFilters = e => {
@@ -59,7 +59,7 @@ const ProcessListContainer = props => {
     }
 
     props.setProcessFilters(newFilters)
-    props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters), processAssignment: true })
+    props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(newFilters), withProcessAssignment: true })
   }
 
   const allProps = {

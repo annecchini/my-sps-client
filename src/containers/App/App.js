@@ -8,16 +8,11 @@ import { setCurrentUser, readProfile } from '../../store/actions/auth'
 import NavBar from '../Layout/NavBar'
 import Footer from '../../components/Layout/Footer'
 import Landing from '../Landing/Landing'
-import ProcessListContainer from '../Process/ProcessListContainer'
-import ProcessCreateContainer from '../Process/ProcessCreateContainer'
-import ProcessReadContainer from '../Process/ProcessReadContainer'
-import ProcessUpdateContainer from '../Process/ProcessUpdateContainer'
-import ProcessDeleteContainer from '../Process/ProcessDeleteContainer'
 
-import LoginContainer from '../Auth/LoginContainer'
-import DashboardContainer from '../Auth/DashboardContainer'
-import ProfileContainer from '../Auth/ProfileContainer'
-import ProfileUpdateUserContainer from '../Auth/ProfileUpdateUserContainer'
+import ProcessRoutes from '../Process/ProcessRoutes'
+import AuthRoutes from '../Auth/AuthRoutes'
+
+import NotFound from '../../components/Layout/NotFound'
 
 import { logoutUser } from '../../store/actions/auth'
 import { setSpsApiToken } from '../../utils/api-helpers'
@@ -47,17 +42,12 @@ function App() {
           <Switch>
             <Route exact path="/" component={Landing} />
 
-            <Route exact path="/process" component={ProcessListContainer} />
-            <Route exact path="/process/create" component={ProcessCreateContainer} />
-            <Route exact path="/process/read/:id" component={ProcessReadContainer} />
-            <Route exact path="/process/update/:id" component={ProcessUpdateContainer} />
-            <Route exact path="/process/delete/:id" component={ProcessDeleteContainer} />
+            <Route path="/process" component={ProcessRoutes} />
+            <Route path="/auth" component={AuthRoutes} />
 
-            <Route exact path="/auth/login" component={LoginContainer} />
-            <Route exact path="/auth/dashboard" component={DashboardContainer} />
-            <Route exact path="/auth/profile" component={ProfileContainer} />
-            <Route exact path="/auth/profile/update/user" component={ProfileUpdateUserContainer} />
+            <Route component={NotFound} />
           </Switch>
+
           <Footer />
         </div>
       </Router>

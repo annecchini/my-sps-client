@@ -6,7 +6,7 @@ import { loginUser } from '../../store/actions/auth'
 import { clearErrors } from '../../store/actions/error'
 import Login from '../../components/Auth/Login'
 import { convertErrorsFormat } from '../../utils/error-helpers'
-import { validateLogin, validatePassword, validateBody } from '../../validation/auth'
+import { validateLogin, validatePassword, validateBodyLogin } from '../../validation/auth'
 
 const LoginContainer = props => {
   const initialLoginData = { login: '', password: '' }
@@ -68,7 +68,7 @@ const LoginContainer = props => {
   const onSubmit = e => {
     e.preventDefault()
 
-    const submitErrors = validateBody(loginData)
+    const submitErrors = validateBodyLogin(loginData)
 
     if (submitErrors) {
       setErrors(submitErrors)

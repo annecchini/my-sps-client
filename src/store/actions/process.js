@@ -36,7 +36,7 @@ export const createProcess = (processData, options = {}) => dispatch => {
 //read Process
 export const readProcess = (id, options = {}) => dispatch => {
   options.withCourse = options.withCourse ? options.withCourse : true
-  options.ProcessAssignment = options.ProcessAssignment ? options.ProcessAssignment : true
+  options.withProcessAssignment = options.withProcessAssignment ? options.withProcessAssignment : false
 
   spsApi
     .get(`/v1/process/${id}`)
@@ -84,8 +84,8 @@ export const deleteProcess = (id, options = {}) => dispatch => {
 //get Process List
 export const listProcess = (options = {}) => dispatch => {
   let url = '/v1/process'
-  const includeCourses = options.course ? options.course : true
-  const includeProcessAssignemnts = options.processAssignment ? options.processAssignment : false
+  options.withCourse = options.withCourse ? options.withCourse : true
+  options.withProcessAssignemnt = options.withProcessAssignemnt ? options.withProcessAssignemnt : false
 
   //base parameters
   if (!options.page) options.page = 1
@@ -110,7 +110,7 @@ export const listProcess = (options = {}) => dispatch => {
       dispatch({ type: LIST_PROCESS, payload: res.data })
 
       //get course for all processes
-      if (includeCourses) {
+      if (options.withCourse) {
         const courseIds = [...new Set(res.data.Processes.map(pr => pr.course_id))]
         courseIds.map(courseId => {
           dispatch(readCourse(courseId))
@@ -119,7 +119,7 @@ export const listProcess = (options = {}) => dispatch => {
       }
 
       //get processAssignments for all process
-      if (includeProcessAssignemnts) {
+      if (options.withProcessAssignemnt) {
         const process_ids = res.data.Processes.map(pr => pr.id)
         const string_ids = convertIdArrayToString(process_ids)
         const options = string_ids ? { process_ids: string_ids } : {}

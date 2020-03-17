@@ -3,10 +3,13 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { clearErrors } from '../../store/actions/error'
+import { updateProfileUser } from '../../store/actions/auth'
 import ProfileUpdateUser from '../../components/Auth/ProfileUpdateUser'
 import isEmpty from '../../utils/is-empty'
+import { validateLogin, validatePassword, validatePasswordCheck, validateBodyProfileUser } from '../../validation/auth'
 
 const ProfileContainer = props => {
+  const { user } = props.profile
   const initialUpdateData = { login: '', changePw: false, password: '', passwordCheck: '' }
   const [updateData, setUpdateData] = useState(initialUpdateData)
   const [errors, setErrors] = useState({})
@@ -16,57 +19,85 @@ const ProfileContainer = props => {
     props.clearErrors()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  //Carregar valores no formulário
+  useEffect(() => {
+    setUpdateData({
+      login: user.login ? user.login : '',
+      changePw: false,
+      password: '',
+      passwordCheck: ''
+    })
+  }, [user])
+
   const onChange = e => {
     e.preventDefault()
-    let fieldErrors = []
-    let newErrors = {}
-
-    const validateLogin = () => {}
-    const validatePassword = () => {}
-    const validatePasswordCheck = () => {}
+    let errorList = {}
+    let newErrors = { ...errors }
 
     switch (e.target.name) {
       case 'login':
-        newErrors[e.target.name] = validateLogin(e.target.value)
-        fieldErrors.push({ name: e.target.name, error: validateLogin(e.target.value) })
+        errorList[e.target.name] = validateLogin(e.target.value)
         break
       case 'password':
-        newErrors[e.target.name] = validatePassword(e.target.value)
-        newErrors['passwordCheck'] = validatePasswordCheck(e.target.value, updateData.password)
-
-        fieldErrors.push({ name: e.target.name, error: validatePassword(e.target.value) })
-        fieldErrors.push({ name: 'passwordCheck', error: validatePasswordCheck(e.target.value, updateData.password) })
+        errorList[e.target.name] = validatePassword(e.target.value)
+        errorList['passwordCheck'] = validatePasswordCheck(updateData.passwordCheck, e.target.value)
         break
       case 'passwordCheck':
-        newErrors['passwordCheck'] = validatePasswordCheck(e.target.value, updateData.password)
-        fieldErrors.push({ name: e.target.name, error: validatePasswordCheck(e.target.value, updateData.password) })
+        errorList[e.target.name] = validatePasswordCheck(e.target.value, updateData.password)
         break
       default:
         break
     }
 
-    //set value
-    setUpdateData({ ...updateData, [e.target.name]: e.target.value })
-
     //remove errors if needed
-    let toRemove = fieldErrors.filter(fe => typeof fe.error === 'undefined').map(fe => fe.name)
-    if (!isEmpty(toRemove)) setErrors(_.omit(errors, toRemove))
+    const toRemove = Object.keys(errorList).filter(key => typeof errorList[key] === 'undefined')
+    if (!isEmpty(toRemove)) newErrors = _.omit(newErrors, toRemove)
 
     //add errors if needed
-    let toAdd = {}
-    fieldErrors.filter(fe => typeof fe.error !== 'undefined').map(fe => (toAdd[fe.name] = fe.error))
-    if (!isEmpty(toAdd)) setErrors({ ...errors, ...toAdd })
+    const toAdd = {}
+    Object.keys(errorList)
+      .filter(key => typeof errorList[key] !== 'undefined')
+      .map(key => (toAdd[key] = errorList[key]))
+    if (!isEmpty(toAdd)) newErrors = { ...newErrors, ...toAdd }
+
+    setUpdateData({ ...updateData, [e.target.name]: e.target.value })
+    setErrors(newErrors)
   }
 
   const onCheck = e => {
     setUpdateData({ ...updateData, [e.target.name]: !updateData[e.target.name] })
   }
 
+  const onSubmit = e => {
+    e.preventDefault()
+    let newUpdateData = {}
+
+    const submitErrors = validateBodyProfileUser(updateData)
+
+    if (submitErrors) {
+      setErrors(submitErrors)
+    } else {
+      if (updateData.changePw) {
+        newUpdateData = _.omit({ ...updateData }, ['changePw', 'passwordCheck'])
+      } else {
+        newUpdateData = _.omit({ ...updateData }, ['changePw', 'password', 'passwordCheck'])
+      }
+
+      props.updateProfileUser(newUpdateData, {
+        callbackOk: user => {
+          props.history.push(`/auth/profile`)
+        }
+      })
+    }
+  }
+
   const allProps = {
     ...props,
     updateData: updateData,
-    onchange: onChange,
-    onCheck: onCheck
+    errors: errors,
+    onChange: onChange,
+    onCheck: onCheck,
+    onSubmit: onSubmit
   }
 
   return <ProfileUpdateUser {...allProps} />
@@ -79,7 +110,8 @@ const mapStateToProps = state => ({
 
 //Put actions on props
 const mapActionsToProps = {
-  clearErrors
+  clearErrors,
+  updateProfileUser
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ProfileContainer)

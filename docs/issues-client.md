@@ -1,6 +1,3 @@
+- Decisão a tomar: Normalizar UserRoles dentro de authStore? ou fora? Não normalizar? (por enquanto não normalizado.)
 - Em Process(create,update) mostrar apenas os cursos permitidos para o usuário logado.
-- Criar "Dashboard", criar "Perfil", "Editar perfil".
 - Criar mecanismos de permissão de exibição. (ProcetectRoute, CheckPermission).
-- Criar NotFound page.
-- Criar routes component para cada modulo.
-- Decisão a tomar: Normalizar UserRoles dentro de authStore?
