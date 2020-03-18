@@ -20,8 +20,8 @@ export default function(state = initialState, action) {
     case READ_PROFILE:
       return {
         ...state,
-        user: action.payload.user ? action.payload.user : {},
-        access: action.payload.access ? action.payload.access : []
+        user: action.payload.user ? action.payload.user : initialState.user,
+        access: action.payload.access ? action.payload.access : initialState.access
       }
     case READ_PROFILE_USER:
       return {
@@ -31,8 +31,8 @@ export default function(state = initialState, action) {
     case CLEAR_PROFILE:
       return {
         ...state,
-        user: {},
-        access: []
+        user: initialState.user,
+        access: initialState.access
       }
     default:
       return state

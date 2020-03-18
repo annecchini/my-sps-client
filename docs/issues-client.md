@@ -1,3 +1,4 @@
 - Decisão a tomar: Normalizar UserRoles dentro de authStore? ou fora? Não normalizar? (por enquanto não normalizado.)
 - Em Process(create,update) mostrar apenas os cursos permitidos para o usuário logado.
-- Criar mecanismos de permissão de exibição. (ProcetectRoute, CheckPermission).
+- Criar mecanismos de permissão de exibição. ( CheckPermission ).
+- criar arquivos de const/strings

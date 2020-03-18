@@ -4,17 +4,14 @@ import { Provider } from 'react-redux'
 import jwt_decode from 'jwt-decode'
 
 import store from '../../store/store'
+import { logoutUser } from '../../store/actions/auth'
 import { setCurrentUser, readProfile } from '../../store/actions/auth'
 import NavBar from '../Layout/NavBar'
-import Footer from '../../components/Layout/Footer'
 import Landing from '../Landing/Landing'
-
 import ProcessRoutes from '../Process/ProcessRoutes'
 import AuthRoutes from '../Auth/AuthRoutes'
-
+import Footer from '../../components/Layout/Footer'
 import NotFound from '../../components/Layout/NotFound'
-
-import { logoutUser } from '../../store/actions/auth'
 import { setSpsApiToken } from '../../utils/api-helpers'
 
 //Check token
