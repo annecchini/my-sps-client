@@ -1,6 +1,5 @@
-export const convertStoreToOptions = store => {
-  const options = store.allIds.map(id => {
-    return { label: store.byId[id].name, value: id }
-  })
-  return options
+export const convertObjetsToOptions = (objList, options = {}) => {
+  const name = options.name || 'name'
+  const value = options.value || 'id'
+  return objList.map(obj => ({ label: obj[name], value: obj[value] }))
 }

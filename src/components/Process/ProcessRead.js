@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { checkNested } from '../../utils/checkNested'
+import PrivateGroup from '../../containers/Auth/PrivateGroup'
 
 const ProcessRead = props => {
   const process = props.process || {}
@@ -9,13 +10,18 @@ const ProcessRead = props => {
   return (
     <React.Fragment>
       <div className="box">
-        <p>
-          <Link to={`/process/update/${process.id}`}>Update</Link>
-        </p>
-        <p>
-          <Link to={`/process/delete/${process.id}`}>Delete</Link>
-        </p>
+        <PrivateGroup permission="process_update" course_id={process.course_id}>
+          <p>
+            <Link to={`/process/update/${process.id}`}>Update</Link>
+          </p>
+        </PrivateGroup>
+        <PrivateGroup permission="process_delete" course_id={process.course_id}>
+          <p>
+            <Link to={`/process/delete/${process.id}`}>Delete</Link>
+          </p>
+        </PrivateGroup>
       </div>
+
       <div className="box">
         <p>ProcessRead</p>
         <p>{`${process.identifier}/${process.year}`}</p>

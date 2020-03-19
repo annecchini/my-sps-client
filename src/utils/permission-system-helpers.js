@@ -6,7 +6,6 @@ const havePermission = (options = {}) => {
   let userRoles = checkNested(options, 'access') ? options.access.UserRoles : []
   let havePermission = false
 
-  console.log('userRoles:', userRoles)
   //decidindo se vou aplicar contexto aos userRoles
   if (options.context) {
     userRoles = userRoles.filter(ur => {
@@ -38,7 +37,6 @@ const havePermission = (options = {}) => {
 export const checkAccess = options => {
   const { access, permission, course_id } = options
 
-  console.log('isAdmin:', isAdmin(access))
   if (isAdmin(access)) return true
 
   const haveGlobalPermission = havePermission({ access, context: 'GLOBAL', permission })

@@ -6,16 +6,17 @@ import { clearErrors } from '../../store/actions/error'
 import { createProcess } from '../../store/actions/process'
 import { listCourse } from '../../store/actions/course'
 import { convertErrorsFormat } from '../../utils/error-helpers'
-import { convertStoreToOptions } from '../../utils/store-helpers'
+import { convertObjetsToOptions } from '../../utils/store-helpers'
 import ProcessCreate from '../../components/Process/ProcessCreate'
 import { validateIdentifier, validateYear, validateCourseId, validateBody } from '../../validation/process'
+import { selectCoursesByAccess } from '../../store/selectors/course'
 
 const ProcessCreateContainer = props => {
   const { errorStore } = props
   const initialCreateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
   const [createData, setCreateData] = useState(initialCreateData)
   const [errors, setErrors] = useState({})
-  const courseOptions = convertStoreToOptions(props.courseStore)
+  const courseOptions = convertObjetsToOptions(props.coursesAvailable, { label: 'name', value: 'id' })
   courseOptions.unshift({ label: 'Escolha o curso', value: '' })
 
   //componentDidMount
@@ -92,9 +93,9 @@ const ProcessCreateContainer = props => {
 }
 
 //Put store-data on props
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   errorStore: state.errorStore,
-  courseStore: state.courseStore
+  coursesAvailable: selectCoursesByAccess(state, { permission: 'process_create' })
 })
 
 //Put actions on props

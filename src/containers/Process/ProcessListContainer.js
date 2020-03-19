@@ -79,7 +79,8 @@ const ProcessListContainer = props => {
 const mapStateToProps = state => ({
   processStore: state.processStore,
   info: state.processStore.info,
-  processes: selectProcesses(state, { withCourse: true, withGraduationLevel: true, withAssignment: true })
+  processes: selectProcesses(state, { withCourse: true, withGraduationLevel: true, withAssignment: true }),
+  authStore: state.authStore
 })
 
 //Put actions on props
