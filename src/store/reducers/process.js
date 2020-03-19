@@ -25,8 +25,8 @@ const sortAllIdsByIdentifier = byId => (a, b) => {
 }
 
 const sortAllIdsByYear = byId => (a, b) => {
-  if (byId[a].year.toLowerCase() < byId[b].year.toLowerCase()) return -1
-  if (byId[a].year.toLowerCase() > byId[b].year.toLowerCase()) return 1
+  if (byId[a].year.toLowerCase() > byId[b].year.toLowerCase()) return -1
+  if (byId[a].year.toLowerCase() < byId[b].year.toLowerCase()) return 1
   return 0
 }
 

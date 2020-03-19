@@ -85,7 +85,7 @@ export const deleteProcess = (id, options = {}) => dispatch => {
 export const listProcess = (options = {}) => dispatch => {
   let url = '/v1/process'
   options.withCourse = options.withCourse ? options.withCourse : true
-  options.withProcessAssignemnt = options.withProcessAssignemnt ? options.withProcessAssignemnt : false
+  options.withProcessAssignment = options.withProcessAssignment ? options.withProcessAssignment : false
 
   //base parameters
   if (!options.page) options.page = 1
@@ -119,7 +119,7 @@ export const listProcess = (options = {}) => dispatch => {
       }
 
       //get processAssignments for all process
-      if (options.withProcessAssignemnt) {
+      if (options.withProcessAssignment) {
         const process_ids = res.data.Processes.map(pr => pr.id)
         const string_ids = convertIdArrayToString(process_ids)
         const options = string_ids ? { process_ids: string_ids } : {}

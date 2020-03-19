@@ -31,11 +31,35 @@
   width: 100%;
 }
 
-.box > ul {
+.list-to-table {
   list-style-type: none;
-  padding-left: 5px;
 }
 
-.box > ul > li > p > span {
-  margin-left: 10px;
+.list-to-table > li {
+  display: table-row;
+  width: 100%;
+}
+
+.list-to-table > li > p {
+  vertical-align: middle;
+  overflow: hidden;
+  margin-right: 5px;
+  display: inline-block;
+  width: 22%;
+  margin-bottom: 0px;
+}
+
+.list-to-table > li > p > span {
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, auto));
+  grid-gap: 5px;
+}
+
+.wrapper > ul {
+  list-style-type: none;
 }
