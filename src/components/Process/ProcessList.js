@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Accordion, Card, Dropdown, ButtonGroup, Button } from 'react-bootstrap'
 
 import { checkNested } from '../../utils/checkNested'
 import MultiSelectFilter from '../MultiSelectFilter'
@@ -15,7 +16,7 @@ const ProcessList = props => {
       const active = i === info.currentPage ? '*' : null
       pagination[i] = (
         <button
-          className={`btn ${active ? 'btn-primary' : 'btn-outline-primary'}`}
+          className={`mx-1 btn ${active ? 'btn-primary' : 'btn-outline-primary'}`}
           key={i}
           onClick={() => changePage(i, 10)}
         >
@@ -28,48 +29,143 @@ const ProcessList = props => {
 
   return (
     <React.Fragment>
-      <div className="box">
-        <PrivateGroup permission="process_create">
-          <Link className="btn btn-primary" to="/process/create">
-            Novo Processo
-          </Link>
-        </PrivateGroup>
-      </div>
-
-      <div className="box">
-        <h6>Filtros</h6>
-        <div className="wrapper">
-          <MultiSelectFilter id="years" filter={filters.years} onTick={tickFilter} />
-          <MultiSelectFilter id="graduationLevels" filter={filters.graduationLevels} onTick={tickFilter} />
-          <MultiSelectFilter id="courses" filter={filters.courses} onTick={tickFilter} />
-          <MultiSelectFilter id="assignments" filter={filters.assignments} onTick={tickFilter} />
-          <div>
-            <input className="btn btn-primary" type="button" value="Limpar" onClick={clearFilters} />
+      <Card className="mt-2 mx-2">
+        <Card.Header as="h5">Processos seletivos</Card.Header>
+        <Card.Body>
+          {/* Lista de botões */}
+          <div className="">
+            <PrivateGroup permission="process_create">
+              <Link className="mx-1 my-1 btn btn-primary" to="/process/create">
+                Novo Processo
+              </Link>
+            </PrivateGroup>
           </div>
-        </div>
 
-        <h6>Lista de processos</h6>
-        <ul className="mb-2 list-group list-to-table">
-          {processes.map(process => {
-            return (
-              <li key={process.id} className="list-group-item">
-                <p>
-                  <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
-                </p>
-                <p>{checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}</p>
-                <p>{checkNested(process, 'course') ? process.course.name : null}</p>
-                <p>
-                  {process.assignments.length > 0 ? (
-                    process.assignments.map(assig => <span>{`${assig.name} `}</span>)
-                  ) : (
-                    <span>{'Sem atribuições associadas'}</span>
-                  )}
-                </p>
-              </li>
-            )
-          })}
-        </ul>
-        {renderPagination(info)}
+          {/* Lista de filtros */}
+          <div className="box">
+            <Dropdown className="mx-1 my-1 d-block d-sm-inline-block" as={ButtonGroup}>
+              <Dropdown.Toggle block id="dd-year">
+                Ano
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <MultiSelectFilter id="years" filter={filters.years} onTick={tickFilter} />
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <Dropdown className="mx-1 my-1 d-block d-sm-inline-block" as={ButtonGroup}>
+              <Dropdown.Toggle block id="dd-graduationLevel">
+                Nível
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <MultiSelectFilter id="graduationLevels" filter={filters.graduationLevels} onTick={tickFilter} />
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <Dropdown className="mx-1 my-1 d-block d-sm-inline-block" as={ButtonGroup}>
+              <Dropdown.Toggle block id="dd-course">
+                Curso
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <MultiSelectFilter id="courses" filter={filters.courses} onTick={tickFilter} />
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <Dropdown className="mx-1 my-1 d-block d-sm-inline-block" as={ButtonGroup}>
+              <Dropdown.Toggle block id="dd-assignment">
+                Atribuição
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <MultiSelectFilter id="assignments" filter={filters.assignments} onTick={tickFilter} />
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+
+            <Button className="my-1" block variant="primary">
+              Block level button
+            </Button>
+
+            <input className="btn btn-primary btn-sm-block" type="button" value="Limpar" onClick={clearFilters} />
+          </div>
+
+          {/* Lista de procesos */}
+          <ul className="mb-2 list-group list-to-table">
+            {processes.map(process => {
+              return (
+                <li key={process.id} className="list-group-item">
+                  <p>
+                    <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
+                  </p>
+                  <p>
+                    {checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}
+                  </p>
+                  <p>{checkNested(process, 'course') ? process.course.name : null}</p>
+                  <p>
+                    {process.assignments.length > 0 ? (
+                      process.assignments.map(assig => <span key={assig.id}>{`${assig.name} `}</span>)
+                    ) : (
+                      <span>{'Sem atribuições associadas'}</span>
+                    )}
+                  </p>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="d-flex justify-content-center">{renderPagination(info)}</div>
+        </Card.Body>
+      </Card>
+
+      <div className="box">
+        <h4>Filtros</h4>
+
+        <Accordion className="mb-2">
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="0">
+              Ano: Sem filtros aplicados.
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="0">
+              <Card.Body>
+                <MultiSelectFilter id="years" filter={filters.years} onTick={tickFilter} />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="1">
+              Nível de graduação: Sem filtros aplicados.
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="1">
+              <Card.Body>
+                <MultiSelectFilter id="graduationLevels" filter={filters.graduationLevels} onTick={tickFilter} />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="2">
+              Curso: Sem filtros aplicados.
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="2">
+              <Card.Body>
+                <MultiSelectFilter id="courses" filter={filters.courses} onTick={tickFilter} />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey="3">
+              Atribuições: Sem filtros aplicados.
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey="3">
+              <Card.Body>
+                <MultiSelectFilter id="assignments" filter={filters.assignments} onTick={tickFilter} />
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
       </div>
     </React.Fragment>
   )

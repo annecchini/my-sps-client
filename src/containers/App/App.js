@@ -6,7 +6,7 @@ import jwt_decode from 'jwt-decode'
 import store from '../../store/store'
 import { logoutUser } from '../../store/actions/auth'
 import { setCurrentUser, readProfile } from '../../store/actions/auth'
-import NavBar from '../Layout/NavBar'
+import NavBarContainer from '../Layout/NavBarContainer'
 import Landing from '../Landing/Landing'
 import ProcessRoutes from '../Process/ProcessRoutes'
 import AuthRoutes from '../Auth/AuthRoutes'
@@ -35,7 +35,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <div className="App">
-          <NavBar />
+          <NavBarContainer />
           <Switch>
             <Route exact path="/" component={Landing} />
 

@@ -60,6 +60,8 @@
   grid-gap: 5px;
 }
 
-.wrapper > ul {
+.filter {
   list-style-type: none;
+  margin: 0px;
+  padding: 0px;
 }

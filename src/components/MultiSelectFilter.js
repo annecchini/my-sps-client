@@ -5,12 +5,12 @@ const MultiSelectFilter = props => {
 
   return (
     <React.Fragment>
-      <ul>
+      <ul className="filter">
         {filter
           ? filter.map(filter => {
               return (
                 <li key={filter.value}>
-                  <label>
+                  <label onClick={onTick(id, filter.value)}>
                     <input
                       type="checkbox"
                       name={filter.value}
