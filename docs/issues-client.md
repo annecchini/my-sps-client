@@ -1,3 +1,5 @@
 - Decisão a tomar: Normalizar UserRoles dentro de authStore? ou fora? Não normalizar? (por enquanto não normalizado.)
 - criar arquivos de const/strings
 - criar BreadCrumbs
+- alterar no front-end: trocar 'atribuição' por 'cargo' onde for assignment.
+- criar pagina de atribuição de cargo.
