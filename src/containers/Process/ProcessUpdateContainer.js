@@ -11,12 +11,15 @@ import ProcessUpdate from '../../components/Process/ProcessUpdate'
 import { validateIdentifier, validateYear, validateCourseId, validateBody } from '../../validation/process'
 import { selectProcessById } from '../../store/selectors/process'
 import { selectCoursesByAccess } from '../../store/selectors/course'
+import isEmpty from '../../utils/is-empty'
 
 const ProcessCreateContainer = props => {
   const process = props.process || {}
-  const { errorStore } = props
+  const { errorStore, processLoading } = props
   const initialUpdateData = { identifier: '', year: '', course_id: '', description: '', visible: false }
   const [updateData, setUpdateData] = useState(initialUpdateData)
+  const [readyToLoad, setReadyToLoad] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const [errors, setErrors] = useState({})
   const courseOptions = convertObjetsToOptions(props.coursesAvailable, { label: 'name', value: 'id' })
   courseOptions.unshift({ label: 'Escolha o curso', value: '' })
@@ -29,15 +32,23 @@ const ProcessCreateContainer = props => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   //Carregar valores no formulário
+  const haveProcess = !isEmpty(props.process) && processLoading === false
   useEffect(() => {
-    setUpdateData({
-      identifier: process.identifier ? process.identifier : '',
-      year: process.year ? process.year : '',
-      course_id: process.course_id ? process.course_id : '',
-      description: process.description ? process.description : '',
-      visible: process.visible ? process.visible : false
-    })
-  }, [process])
+    if (haveProcess) setReadyToLoad(haveProcess)
+  }, [haveProcess])
+
+  useEffect(() => {
+    if (readyToLoad && !loaded) {
+      setUpdateData({
+        identifier: process.identifier ? process.identifier : '',
+        year: process.year ? process.year : '',
+        course_id: process.course_id ? process.course_id : '',
+        description: process.description ? process.description : '',
+        visible: process.visible ? process.visible : false
+      })
+      setLoaded(true)
+    }
+  }, [readyToLoad, loaded, process])
 
   //Pegar errors do store (onPropsUpdate)
   useEffect(() => {
@@ -52,25 +63,38 @@ const ProcessCreateContainer = props => {
 
   const onChange = e => {
     e.preventDefault()
-    let fieldError = null
+    let errorList = {}
+    let newErrors = { ...errors }
 
     switch (e.target.name) {
       case 'identifier':
-        fieldError = validateIdentifier(e.target.value, 'update')
+        errorList[e.target.name] = validateIdentifier(e.target.value, 'update')
+        if (newErrors['year']) errorList['year'] = validateYear(updateData.year, 'update')
         break
       case 'year':
-        fieldError = validateYear(e.target.value, 'update')
+        if (newErrors['identifier']) errorList['identifier'] = validateIdentifier(updateData.identifier, 'update')
+        errorList[e.target.name] = validateYear(e.target.value, 'update')
         break
       case 'course_id':
-        fieldError = validateCourseId(e.target.value, 'update')
+        errorList[e.target.name] = validateCourseId(e.target.value, 'update')
         break
       default:
         break
     }
 
+    //remove errors if needed
+    const toRemove = Object.keys(errorList).filter(key => typeof errorList[key] === 'undefined')
+    if (!isEmpty(toRemove)) newErrors = _.omit(newErrors, toRemove)
+
+    //add errors if needed
+    const toAdd = {}
+    Object.keys(errorList)
+      .filter(key => typeof errorList[key] !== 'undefined')
+      .map(key => (toAdd[key] = errorList[key]))
+    if (!isEmpty(toAdd)) newErrors = { ...newErrors, ...toAdd }
+
     setUpdateData({ ...updateData, [e.target.name]: e.target.value })
-    if (fieldError) setErrors({ ...errors, [e.target.name]: fieldError })
-    else setErrors(_.omit(errors, e.target.name))
+    setErrors(newErrors)
   }
 
   const onCheck = e => {
@@ -110,6 +134,7 @@ const ProcessCreateContainer = props => {
 const mapStateToProps = (state, ownProps) => ({
   errorStore: state.errorStore,
   process: selectProcessById(state, ownProps.match.params.id, { withCourse: true, withAssignment: true }),
+  processLoading: state.processStore.loading,
   coursesAvailable: selectCoursesByAccess(state, { permission: 'process_update' })
 })
 

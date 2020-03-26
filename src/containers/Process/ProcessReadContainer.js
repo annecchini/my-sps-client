@@ -10,7 +10,7 @@ const ProcessCreateContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.readProcess(props.match.params.id, { withCourse: true, withAssignment: true })
+    props.readProcess(props.match.params.id, { withCourse: true, withProcessAssignment: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const allProps = {

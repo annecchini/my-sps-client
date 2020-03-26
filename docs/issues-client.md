@@ -1,4 +1,3 @@
 - Decisão a tomar: Normalizar UserRoles dentro de authStore? ou fora? Não normalizar? (por enquanto não normalizado.)
 - criar arquivos de const/strings
-- reformular paginação como um componente.
-- criar componente de exibição de erro.
+- criar BreadCrumbs

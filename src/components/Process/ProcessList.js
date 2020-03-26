@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Dropdown, ButtonGroup, Button, Badge, Pagination } from 'react-bootstrap'
+import { Card, Dropdown, ButtonGroup, Button, Badge } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import { checkNested } from '../../utils/checkNested'
 import MultiSelectFilter from '../MultiSelectFilter'
 import PrivateGroup from '../../containers/Auth/PrivateGroup'
+import PaginationGroup from '../../components/PaginationGroup'
 
 const ProcessList = props => {
   const { filters, tickFilter, clearFilters, info, changePage } = props
@@ -21,66 +22,6 @@ const ProcessList = props => {
     }
 
     return appliedFilters
-  }
-
-  const renderPagination = info => {
-    let pagination = []
-    for (let i = 1; i <= info.numberOfPages; i++) {
-      const active = i === info.currentPage ? '*' : null
-      pagination[i] = (
-        <button
-          className={`mx-1 btn ${active ? 'btn-primary' : 'btn-outline-primary'}`}
-          key={i}
-          onClick={() => changePage(i, 10)}
-        >
-          {i}
-        </button>
-      )
-    }
-    return pagination
-  }
-
-  const renderPagination2 = (nPages, cPage) => {
-    if (nPages === 1) return null
-
-    const paginationSize = 5 //impar
-    const pages = [...Array(paginationSize).keys()]
-      .map(x => cPage + x - (paginationSize - 1) / 2)
-      .filter(x => x > 0 && x <= nPages)
-
-    return (
-      <Pagination>
-        <Pagination.First onClick={() => changePage(1, 10)} />
-
-        <Pagination.Prev
-          active={cPage > 1 ? true : false}
-          onClick={() => {
-            if (cPage - 1 > 0) return changePage(cPage - 1, 10)
-            else return null
-          }}
-        />
-
-        {pages[0] > 1 ? <Pagination.Ellipsis /> : null}
-
-        {pages.map((x, key) => (
-          <Pagination.Item key={key} active={x === cPage ? true : false} onClick={() => changePage(x, 10)}>
-            {x}
-          </Pagination.Item>
-        ))}
-
-        {pages[paginationSize - 1] < nPages ? <Pagination.Ellipsis /> : null}
-
-        <Pagination.Next
-          active={cPage < nPages ? true : false}
-          onClick={() => {
-            if (cPage + 1 <= nPages) return changePage(cPage + 1, 10)
-            else return null
-          }}
-        />
-
-        <Pagination.Last onClick={() => changePage(nPages, 10)} />
-      </Pagination>
-    )
   }
 
   return (
@@ -172,33 +113,41 @@ const ProcessList = props => {
 
           {/* Lista de procesos */}
           <ul className="mb-1 list-group li-tb">
-            {processes.map(process => {
-              return (
-                <li key={process.id} className="list-group-item">
-                  <p>
-                    <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
-                  </p>
-                  <p>
-                    {checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}
-                  </p>
-                  <p>{checkNested(process, 'course') ? process.course.name : null}</p>
-                  <p>
-                    {process.assignments.length > 0 ? (
-                      process.assignments.map(assig => <span key={assig.id}>{`${assig.name} `}</span>)
-                    ) : (
-                      <span>{'Sem atribuições associadas'}</span>
-                    )}
-                  </p>
-                  <p>
-                    <LinkContainer to={`/process/read/${process.id}`}>
-                      <Button>Acessar</Button>
-                    </LinkContainer>
-                  </p>
-                </li>
-              )
-            })}
+            {processes.length > 0 ? (
+              processes.map(process => {
+                return (
+                  <li key={process.id} className="list-group-item">
+                    <p>
+                      <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
+                    </p>
+                    <p>
+                      {checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}
+                    </p>
+                    <p>{checkNested(process, 'course') ? process.course.name : null}</p>
+                    <p>
+                      {process.assignments.length > 0 ? (
+                        process.assignments.map(assig => <span key={assig.id}>{`${assig.name} `}</span>)
+                      ) : (
+                        <span>{'Sem atribuições associadas'}</span>
+                      )}
+                    </p>
+                    <p>
+                      <LinkContainer to={`/process/read/${process.id}`}>
+                        <Button>Acessar</Button>
+                      </LinkContainer>
+                    </p>
+                  </li>
+                )
+              })
+            ) : (
+              <li className="list-group-item">
+                <p>Sem resultados para exibir.</p>
+              </li>
+            )}
           </ul>
-          <div className="d-flex justify-content-center">{renderPagination2(info.numberOfPages, info.currentPage)}</div>
+          <div className="d-flex justify-content-center">
+            <PaginationGroup nPages={info.numberOfPages} cPage={info.currentPage} changePage={changePage} />
+          </div>
         </Card.Body>
       </Card>
     </React.Fragment>

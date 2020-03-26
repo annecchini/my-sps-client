@@ -12,7 +12,7 @@ const ProcessCreateContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.readProcess(props.match.params.id)
+    props.readProcess(props.match.params.id, { withCourse: true, withProcessAssignment: true })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = e => {

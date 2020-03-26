@@ -10,6 +10,7 @@ import { convertObjetsToOptions } from '../../utils/store-helpers'
 import ProcessCreate from '../../components/Process/ProcessCreate'
 import { validateIdentifier, validateYear, validateCourseId, validateBody } from '../../validation/process'
 import { selectCoursesByAccess } from '../../store/selectors/course'
+import isEmpty from '../../utils/is-empty'
 
 const ProcessCreateContainer = props => {
   const { errorStore } = props
@@ -38,25 +39,38 @@ const ProcessCreateContainer = props => {
 
   const onChange = e => {
     e.preventDefault()
-    let fieldError = null
+    let errorList = {}
+    let newErrors = { ...errors }
 
     switch (e.target.name) {
       case 'identifier':
-        fieldError = validateIdentifier(e.target.value, 'create')
+        errorList[e.target.name] = validateIdentifier(e.target.value, 'create')
+        if (newErrors['year']) errorList['year'] = validateYear(createData.year, 'create')
         break
       case 'year':
-        fieldError = validateYear(e.target.value, 'create')
+        if (newErrors['identifier']) errorList['identifier'] = validateIdentifier(createData.identifier, 'create')
+        errorList[e.target.name] = validateYear(e.target.value, 'create')
         break
       case 'course_id':
-        fieldError = validateCourseId(e.target.value, 'create')
+        errorList[e.target.name] = validateCourseId(e.target.value, 'create')
         break
       default:
         break
     }
 
+    //remove errors if needed
+    const toRemove = Object.keys(errorList).filter(key => typeof errorList[key] === 'undefined')
+    if (!isEmpty(toRemove)) newErrors = _.omit(newErrors, toRemove)
+
+    //add errors if needed
+    const toAdd = {}
+    Object.keys(errorList)
+      .filter(key => typeof errorList[key] !== 'undefined')
+      .map(key => (toAdd[key] = errorList[key]))
+    if (!isEmpty(toAdd)) newErrors = { ...newErrors, ...toAdd }
+
     setCreateData({ ...createData, [e.target.name]: e.target.value })
-    if (fieldError) setErrors({ ...errors, [e.target.name]: fieldError })
-    else setErrors(_.omit(errors, e.target.name))
+    setErrors(newErrors)
   }
 
   const onCheck = e => {

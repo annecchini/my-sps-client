@@ -15,7 +15,7 @@ const ProcessListContainer = props => {
   //componentDidMount
   useEffect(() => {
     props.clearErrors()
-    props.listProcess({ withProcessAssignment: true })
+    props.listProcess({ page: 1, limit: 10, ...buildFilterStrings(filters), withProcessAssignment: true })
 
     //Baixar os filtros apenas se não os tiver.
     if (isEmpty(filters)) {

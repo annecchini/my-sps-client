@@ -1,38 +1,86 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Card, Button } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import { checkNested } from '../../utils/checkNested'
 import PrivateGroup from '../../containers/Auth/PrivateGroup'
+import ErrorAlert from '../Error/ErrorAlert'
+import isEmpty from '../../utils/is-empty'
 
 const ProcessRead = props => {
   const process = props.process || {}
+  const { errorStore } = props
 
   return (
     <React.Fragment>
-      <div className="box">
-        <PrivateGroup permission="process_update" course_id={process.course_id}>
-          <p>
-            <Link to={`/process/update/${process.id}`}>Update</Link>
-          </p>
-        </PrivateGroup>
-        <PrivateGroup permission="process_delete" course_id={process.course_id}>
-          <p>
-            <Link to={`/process/delete/${process.id}`}>Delete</Link>
-          </p>
-        </PrivateGroup>
-      </div>
+      <ErrorAlert errorStore={errorStore} />
 
-      <div className="box">
-        <p>ProcessRead</p>
-        <p>{`${process.identifier}/${process.year}`}</p>
-        <p>{checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}</p>
-        <p>{checkNested(process, 'course') ? process.course.name : null}</p>
-        <p>
-          {checkNested(process, 'assignments') && process.assignments.length > 0
-            ? process.assignments.map(assig => `${assig.name} `)
-            : 'Sem atribuições associadas.'}
-        </p>
-      </div>
+      <Card className="mt-2 mx-2">
+        <Card.Header as="h5">Processos seletivo</Card.Header>
+        <Card.Body>
+          {/* Lista de botões */}
+          <div className="mb-1">
+            <PrivateGroup permission="process_update" course_id={process.course_id}>
+              <LinkContainer to={`/process/update/${props.match.params.id}`}>
+                <Button>Editar processo</Button>
+              </LinkContainer>
+            </PrivateGroup>
+            <PrivateGroup permission="process_delete" course_id={process.course_id}>
+              <LinkContainer to={`/process/delete/${props.match.params.id}`}>
+                <Button className="ml-1" variant="danger">
+                  Excluir processo
+                </Button>
+              </LinkContainer>
+            </PrivateGroup>
+          </div>
+
+          {/* Informações básicas: */}
+          <Card>
+            <Card.Body>
+              <dl className="row mb-0">
+                <dt className="col-sm-3">Idenficador:</dt>
+                <dd className="col-sm-9">{process.identifier}</dd>
+
+                <dt className="col-sm-3">Ano:</dt>
+                <dd className="col-sm-9">{process.year}</dd>
+
+                <dt className="col-sm-3">Nível:</dt>
+                <dd className="col-sm-9">
+                  {checkNested(process, 'course', 'graduationLevel')
+                    ? process.course.graduationLevel.name
+                    : 'Sem nível associado.'}
+                </dd>
+
+                <dt className="col-sm-3">Curso:</dt>
+                <dd className="col-sm-9">
+                  {checkNested(process, 'course') ? process.course.name : 'Sem curso associado.'}
+                </dd>
+
+                <dt className="col-sm-3">Descrição:</dt>
+                <dd className="col-sm-9">{!isEmpty(process.description) ? process.description : 'Sem descrição.'}</dd>
+
+                <dt className="col-sm-3">Atribuições:</dt>
+                <dd className="col-sm-9">
+                  <ul className="list-inline mb-0">
+                    {checkNested(process, 'assignments') && process.assignments.length > 0 ? (
+                      process.assignments.map(assig => (
+                        <li className="list-inline-item" key={assig.id}>{`${assig.name}`}</li>
+                      ))
+                    ) : (
+                      <li className="list-inline-item" key="no-assig">
+                        Sem atribuições associadas.
+                      </li>
+                    )}
+                    <li className="list-inline-item" key="process-assig-update">
+                      <Button>Editar atribuições</Button>
+                    </li>
+                  </ul>
+                </dd>
+              </dl>
+            </Card.Body>
+          </Card>
+        </Card.Body>
+      </Card>
     </React.Fragment>
   )
 }
