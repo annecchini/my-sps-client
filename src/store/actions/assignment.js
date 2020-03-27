@@ -1,5 +1,5 @@
 import { spsApi } from '../../utils/api-helpers'
-import { LOADING_ASSIGNMENT, READ_ASSIGNMENT } from '../actionTypes'
+import { LOADING_ASSIGNMENT, READ_ASSIGNMENT, LIST_ASSIGNMENT } from '../actionTypes'
 import { READ_ERROR } from '../actionTypes'
 
 //ASSIGNMENT loading
@@ -15,10 +15,17 @@ export const readAssignment = (id, options = {}) => dispatch => {
   spsApi
     .get(`/v1/assignment/${id}`)
     .then(res => {
-      dispatch({
-        type: READ_ASSIGNMENT,
-        payload: res.data
-      })
+      dispatch({ type: READ_ASSIGNMENT, payload: res.data })
+    })
+    .catch(err => handleErrors(err, dispatch))
+}
+
+export const listAssignment = (options = {}) => dispatch => {
+  dispatch(setAssignmentLoading())
+  spsApi
+    .get(`/v1/assignment/`)
+    .then(res => {
+      dispatch({ type: LIST_ASSIGNMENT, payload: res.data })
     })
     .catch(err => handleErrors(err, dispatch))
 }

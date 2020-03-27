@@ -23,7 +23,7 @@ export default class ProcessRoutes extends Component {
           permission="process_create"
         />
 
-        <PrivateRoute exact path={`${this.props.match.path}/read/:id`} component={ProcessReadContainer} />
+        <Route exact path={`${this.props.match.path}/read/:id`} component={ProcessReadContainer} />
 
         <PrivateRoute
           exact

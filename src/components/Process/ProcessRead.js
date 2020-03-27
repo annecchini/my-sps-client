@@ -16,7 +16,7 @@ const ProcessRead = props => {
       <ErrorAlert errorStore={errorStore} />
 
       <Card className="mt-2 mx-2">
-        <Card.Header as="h5">Processos seletivo</Card.Header>
+        <Card.Header as="h5">Processo seletivo</Card.Header>
         <Card.Body>
           {/* Lista de botões */}
           <div className="mb-1">
@@ -46,20 +46,20 @@ const ProcessRead = props => {
 
                 <dt className="col-sm-3">Nível:</dt>
                 <dd className="col-sm-9">
-                  {checkNested(process, 'course', 'graduationLevel')
+                  {checkNested(process, 'course', 'graduationLevel', 'name')
                     ? process.course.graduationLevel.name
                     : 'Sem nível associado.'}
                 </dd>
 
                 <dt className="col-sm-3">Curso:</dt>
                 <dd className="col-sm-9">
-                  {checkNested(process, 'course') ? process.course.name : 'Sem curso associado.'}
+                  {checkNested(process, 'course', 'name') ? process.course.name : 'Sem curso associado.'}
                 </dd>
 
                 <dt className="col-sm-3">Descrição:</dt>
                 <dd className="col-sm-9">{!isEmpty(process.description) ? process.description : 'Sem descrição.'}</dd>
 
-                <dt className="col-sm-3">Atribuições:</dt>
+                <dt className="col-sm-3">Cargos:</dt>
                 <dd className="col-sm-9">
                   <ul className="list-inline mb-0">
                     {checkNested(process, 'assignments') && process.assignments.length > 0 ? (
@@ -68,11 +68,13 @@ const ProcessRead = props => {
                       ))
                     ) : (
                       <li className="list-inline-item" key="no-assig">
-                        Sem atribuições associadas.
+                        Sem cargos associados
                       </li>
                     )}
                     <li className="list-inline-item" key="process-assig-update">
-                      <Button>Editar atribuições</Button>
+                      <LinkContainer to={`/process-assignment/by-process/${process.id}`}>
+                        <Button>Editar cargos</Button>
+                      </LinkContainer>
                     </li>
                   </ul>
                 </dd>

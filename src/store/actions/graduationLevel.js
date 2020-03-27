@@ -15,10 +15,7 @@ export const readGraduationLevel = (id, options = {}) => dispatch => {
   spsApi
     .get(`/v1/graduationLevel/${id}`)
     .then(res => {
-      dispatch({
-        type: READ_GRADUATIONLEVEL,
-        payload: res.data
-      })
+      dispatch({ type: READ_GRADUATIONLEVEL, payload: res.data })
     })
     .catch(err => handleErrors(err, dispatch))
 }

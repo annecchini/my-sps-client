@@ -35,19 +35,26 @@ export const createProcess = (processData, options = {}) => dispatch => {
 
 //read Process
 export const readProcess = (id, options = {}) => dispatch => {
-  options.withCourse = options.withCourse ? options.withCourse : true
-  options.withProcessAssignment = options.withProcessAssignment ? options.withProcessAssignment : false
+  options.withCourse = 'withCourse' in options ? options.withCourse : true
+  options.withGraduationLevel = 'withGraduationLevel' in options ? options.withGraduationLevel : true
+  options.withProcessAssignment = 'withProcessAssignment' in options ? options.withProcessAssignment : false
+  options.withAssignment = 'withAssignment' in options ? options.withAssignment : true
 
+  dispatch(setProcessLoading())
   spsApi
     .get(`/v1/process/${id}`)
     .then(res => {
       dispatch({ type: READ_PROCESS, payload: res.data })
 
-      //get course
-      if (options.withCourse === true) dispatch(readCourse(res.data.course_id))
+      //get course / graduationLevel
+      if (options.withCourse === true)
+        dispatch(readCourse(res.data.course_id, { withGraduationLevel: options.withGraduationLevel }))
 
       //get processAssignments / assignments
-      if (options.withProcessAssignment === true) dispatch(listAddProcessAssignment({ process_ids: [res.data.id] }))
+      if (options.withProcessAssignment === true) {
+        const string_ids = convertIdArrayToString([res.data.id])
+        dispatch(listAddProcessAssignment({ process_ids: string_ids, withAssignment: options.withAssignment }))
+      }
 
       //run callBack
       if (options.callbackOk) options.callbackOk(res.data)
@@ -83,9 +90,12 @@ export const deleteProcess = (id, options = {}) => dispatch => {
 
 //get Process List
 export const listProcess = (options = {}) => dispatch => {
+  options.withCourse = 'withCourse' in options ? options.withCourse : true
+  options.withGraduationLevel = 'withGraduationLevel' in options ? options.withGraduationLevel : true
+  options.withProcessAssignment = 'withProcessAssignment' in options ? options.withProcessAssignment : false
+  options.withAssignment = 'withAssignment' in options ? options.withAssignment : true
+
   let url = '/v1/process'
-  options.withCourse = options.withCourse ? options.withCourse : true
-  options.withProcessAssignment = options.withProcessAssignment ? options.withProcessAssignment : false
 
   //base parameters
   if (!options.page) options.page = 1
@@ -96,11 +106,8 @@ export const listProcess = (options = {}) => dispatch => {
 
   //filters
   if (options.years) url = url + `&years=${options.years}`
-
   if (options.courses) url = url + `&courses=${options.courses}`
-
   if (options.graduationLevels) url = url + `&graduationLevels=${options.graduationLevels}`
-
   if (options.assignments) url = url + `&assignments=${options.assignments}`
 
   dispatch(setProcessLoading())
@@ -110,20 +117,20 @@ export const listProcess = (options = {}) => dispatch => {
       dispatch({ type: LIST_PROCESS, payload: res.data })
 
       //get course for all processes
-      if (options.withCourse) {
+      if (options.withCourse === true) {
         const courseIds = [...new Set(res.data.Processes.map(pr => pr.course_id))]
         courseIds.map(courseId => {
-          dispatch(readCourse(courseId))
+          dispatch(readCourse(courseId, { withGraduationLevel: options.withGraduationLevel }))
           return null
         })
       }
 
       //get processAssignments for all process
-      if (options.withProcessAssignment) {
+      if (options.withProcessAssignment === true) {
         const process_ids = res.data.Processes.map(pr => pr.id)
         const string_ids = convertIdArrayToString(process_ids)
-        const options = string_ids ? { process_ids: string_ids } : {}
-        dispatch(listAddProcessAssignment(options))
+        const whereProcessIds = string_ids ? { process_ids: string_ids } : {}
+        dispatch(listAddProcessAssignment({ ...whereProcessIds, withGraduationLevel: options.withGraduationLevel }))
       }
     })
     .catch(err => handleErrors(err, dispatch))

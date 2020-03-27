@@ -23,8 +23,7 @@ const ProcessCreateContainer = props => {
 //Put store-data on props
 const mapStateToProps = (state, ownProps) => ({
   process: selectProcessById(state, ownProps.match.params.id, { withCourse: true, withAssignment: true }),
-  errorStore: state.errorStore,
-  authStore: state.authStore
+  errorStore: state.errorStore
 })
 
 //Put actions on props

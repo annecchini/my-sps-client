@@ -12,27 +12,23 @@ export const setCourseLoading = () => {
 
 //read course
 export const readCourse = (id, options = {}) => dispatch => {
-  const includeGraduationLevel = options.graduationLevel ? options.graduationLevel : true
+  options.withGraduationLevel = 'withGraduationLevel' in options ? options.withGraduationLevel : true
 
   dispatch(setCourseLoading())
   spsApi
     .get(`/v1/course/${id}`)
     .then(res => {
-      dispatch({
-        type: READ_COURSE,
-        payload: res.data
-      })
+      dispatch({ type: READ_COURSE, payload: res.data })
 
       //include graduationLevel
-      if (includeGraduationLevel) {
-        dispatch(readGraduationLevel(res.data.graduationLevel_id))
-      }
+      if (options.withGraduationLevel === true) dispatch(readGraduationLevel(res.data.graduationLevel_id))
     })
     .catch(err => handleErrors(err, dispatch))
 }
 
 export const listCourse = (options = {}) => dispatch => {
-  const includeGraduationLevels = options.graduationLevel ? options.graduationLevel : true
+  options.withGraduationLevel = 'withGraduationLevel' in options ? options.withGraduationLevel : true
+
   dispatch(setCourseLoading())
   spsApi
     .get(`/v1/course`)
@@ -43,7 +39,7 @@ export const listCourse = (options = {}) => dispatch => {
       })
 
       //include graduationLevel for each course
-      if (includeGraduationLevels) {
+      if (options.withGraduationLevel === true) {
         const graduationLevelIds = [...new Set(res.data.map(course => course.graduationLevel_id))]
         graduationLevelIds.map(graduationLevelId => {
           dispatch(readGraduationLevel(graduationLevelId))

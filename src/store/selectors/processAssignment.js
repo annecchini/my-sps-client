@@ -20,3 +20,13 @@ export const selectProcessAssignmentByProcessId = (store, process_id, options = 
 
   return processAssignments
 }
+
+export const selectProcessAssignmentByProcessIdV2 = (store, process_id, options = {}) => {
+  const filterByProcessId = (byId, process_id) => a => byId[a].process_id === process_id
+
+  const ids = store.processAssignmentStore.allIds.filter(
+    filterByProcessId(store.processAssignmentStore.byId, process_id)
+  )
+
+  return ids.map(id => store.processAssignmentStore.byId[id])
+}

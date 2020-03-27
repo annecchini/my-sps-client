@@ -80,7 +80,7 @@ const ProcessList = props => {
               <div>
                 <Dropdown className="d-block" as={ButtonGroup}>
                   <Dropdown.Toggle block id="dd-assignment">
-                    Atribuição
+                    Cargo
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item>
@@ -121,14 +121,16 @@ const ProcessList = props => {
                       <Link to={`/process/read/${process.id}`}>{`${process.identifier}/${process.year}`}</Link>
                     </p>
                     <p>
-                      {checkNested(process, 'course', 'graduationLevel') ? process.course.graduationLevel.name : null}
+                      {checkNested(process, 'course', 'graduationLevel', 'name')
+                        ? process.course.graduationLevel.name
+                        : null}
                     </p>
-                    <p>{checkNested(process, 'course') ? process.course.name : null}</p>
+                    <p>{checkNested(process, 'course', 'name') ? process.course.name : null}</p>
                     <p>
                       {process.assignments.length > 0 ? (
                         process.assignments.map(assig => <span key={assig.id}>{`${assig.name} `}</span>)
                       ) : (
-                        <span>{'Sem atribuições associadas'}</span>
+                        <span>Sem cargos associados</span>
                       )}
                     </p>
                     <p>

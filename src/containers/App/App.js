@@ -13,6 +13,7 @@ import AuthRoutes from '../Auth/AuthRoutes'
 import Footer from '../../components/Layout/Footer'
 import NotFound from '../../components/Layout/NotFound'
 import { setSpsApiToken } from '../../utils/api-helpers'
+import ProcessAssignmentRoutes from '../ProcessAssignment/ProcessAssignmentRoutes'
 
 //Check token
 if (localStorage.token && typeof localStorage.token !== 'undefined') {
@@ -41,6 +42,7 @@ function App() {
 
             <Route path="/process" component={ProcessRoutes} />
             <Route path="/auth" component={AuthRoutes} />
+            <Route path="/process-assignment" component={ProcessAssignmentRoutes} />
 
             <Route component={NotFound} />
           </Switch>

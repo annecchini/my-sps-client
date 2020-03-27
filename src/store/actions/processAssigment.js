@@ -1,7 +1,7 @@
 import { spsApi } from '../../utils/api-helpers'
 import { LOADING_PROCESSASSIGNMENT, READ_PROCESSASSIGNMENT, LIST_ADD_PROCESSASSIGNMENT } from '../actionTypes'
 import { READ_ERROR } from '../actionTypes'
-import { readAssignment } from './assignments'
+import { readAssignment } from './assignment'
 
 //PROCESSASSIGNMENT loading
 export const setProcessAssignmentLoading = () => {
@@ -16,35 +16,26 @@ export const readProcessAssignment = (id, options = {}) => dispatch => {
   spsApi
     .get(`/v1/processassignment/${id}`)
     .then(res => {
-      dispatch({
-        type: READ_PROCESSASSIGNMENT,
-        payload: res.data
-      })
+      dispatch({ type: READ_PROCESSASSIGNMENT, payload: res.data })
     })
     .catch(err => handleErrors(err, dispatch))
 }
 
 //read PROCESSASSIGNMENT
 export const listAddProcessAssignment = (options = {}) => dispatch => {
-  const includeAssignments = options.assignment ? options.assignment : true
+  options.withAssignment = 'withAssignment' in options ? options.withAssignment : true
 
   let url = `/v1/processassignment`
-
-  if (options.process_ids) {
-    url = url + `?process_ids=${options.process_ids}`
-  }
+  if (options.process_ids) url = url + `?process_ids=${options.process_ids}`
 
   dispatch(setProcessAssignmentLoading())
   spsApi
     .get(`${url}`)
     .then(res => {
-      dispatch({
-        type: LIST_ADD_PROCESSASSIGNMENT,
-        payload: res.data
-      })
+      dispatch({ type: LIST_ADD_PROCESSASSIGNMENT, payload: res.data })
 
       //load assigments related
-      if (includeAssignments) {
+      if (options.withAssignment === true) {
         const assignmentIds = [...new Set(res.data.map(pa => pa.assignment_id))]
         assignmentIds.map(assignmentId => {
           dispatch(readAssignment(assignmentId))
