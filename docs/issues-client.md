@@ -1,5 +1,4 @@
 - Decisão a tomar: Normalizar UserRoles dentro de authStore? ou fora? Não normalizar? (por enquanto não normalizado.)
 - criar arquivos de const/strings
 - criar BreadCrumbs
-- criar pagina de atribuição de cargo.
-- melhorar a iterface de process list.
+- separar view do container em processAssignment

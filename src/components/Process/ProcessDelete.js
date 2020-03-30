@@ -32,7 +32,7 @@ const ProcessDelete = props => {
 
                 <dt className="col-sm-3">Nível:</dt>
                 <dd className="col-sm-9">
-                  {checkNested(process, 'course', 'graduationLevel')
+                  {checkNested(process, 'course', 'graduationLevel', 'name')
                     ? process.course.graduationLevel.name
                     : 'Sem nível associado.'}
                 </dd>

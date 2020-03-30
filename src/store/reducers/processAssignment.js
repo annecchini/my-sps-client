@@ -21,7 +21,7 @@ const putItem = (state, payload) => {
 }
 
 const removeItem = (state, id) => {
-  const newById = _.omit(state, id)
+  const newById = _.omit(state.byId, id)
   const newAllIds = Object.keys(newById)
   return { byId: newById, allIds: newAllIds }
 }

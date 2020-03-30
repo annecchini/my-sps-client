@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Dropdown, ButtonGroup, Button, Badge } from 'react-bootstrap'
+import { Card, Dropdown, ButtonGroup, Button, Badge, Container, Row, Col } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import { checkNested } from '../../utils/checkNested'
@@ -135,7 +135,9 @@ const ProcessList = props => {
                     </p>
                     <p>
                       <LinkContainer to={`/process/read/${process.id}`}>
-                        <Button>Acessar</Button>
+                        <Button block variant="outline-primary">
+                          Acessar
+                        </Button>
                       </LinkContainer>
                     </p>
                   </li>
