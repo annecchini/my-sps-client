@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card, Dropdown, ButtonGroup, Button, Badge, Container, Row, Col } from 'react-bootstrap'
+import { Card, Dropdown, ButtonGroup, Button, Badge } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import { checkNested } from '../../utils/checkNested'

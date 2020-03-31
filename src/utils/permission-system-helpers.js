@@ -14,7 +14,7 @@ const havePermission = (options = {}) => {
   }
 
   //decidindo se vou aplicar course_id aos userRoles
-  if (options.course_id) {
+  if (typeof options.course_id) {
     userRoles = userRoles.filter(ur => {
       return ur.Course.id === options.course_id
     })

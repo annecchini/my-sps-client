@@ -14,6 +14,7 @@ import Footer from '../../components/Layout/Footer'
 import NotFound from '../../components/Layout/NotFound'
 import { setSpsApiToken } from '../../utils/api-helpers'
 import ProcessAssignmentRoutes from '../ProcessAssignment/ProcessAssignmentRoutes'
+import { clearErrors } from '../../store/actions/error'
 
 //Check token
 if (localStorage.token && typeof localStorage.token !== 'undefined') {
@@ -22,7 +23,11 @@ if (localStorage.token && typeof localStorage.token !== 'undefined') {
 
   store.dispatch(setCurrentUser(decoded))
   setSpsApiToken(localStorage.token)
-  store.dispatch(readProfile())
+  store.dispatch(
+    readProfile({
+      callbackFail: () => store.dispatch(clearErrors())
+    })
+  )
 
   //check for expired token
   const currentTime = Date.now() / 1000
@@ -31,17 +36,18 @@ if (localStorage.token && typeof localStorage.token !== 'undefined') {
   }
 }
 
-function App() {
+function App(props) {
   return (
     <Provider store={store}>
       <Router>
         <div className="App">
-          <NavBarContainer />
+          <Route component={NavBarContainer} />
           <Switch>
             <Route exact path="/" component={Landing} />
 
-            <Route path="/process" component={ProcessRoutes} />
             <Route path="/auth" component={AuthRoutes} />
+
+            <Route path="/process" component={ProcessRoutes} />
             <Route path="/process-assignment" component={ProcessAssignmentRoutes} />
 
             <Route component={NotFound} />

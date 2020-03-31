@@ -29,7 +29,7 @@ const NavBar = props => {
     } else {
       return (
         <Nav className="justify-content-end">
-          <LinkContainer to="/auth/login">
+          <LinkContainer to={{ pathname: '/auth/login', prevLocation: { from: props.location } }}>
             <Nav.Link>Login</Nav.Link>
           </LinkContainer>
         </Nav>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { Form, Alert, Button } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import ErrorAlert from '../../components/Error/ErrorAlert'
 import { clearErrors } from '../../store/actions/error'
@@ -97,14 +98,6 @@ const ProcAssigCrudByProcContainer = props => {
   //   ...props
   // }
 
-  // console.log('\n')
-  // console.log('Variaveis:')
-  // console.log('process: ', process)
-  // console.log('course: ', course)
-  // console.log('procAssig: ', processAssignments)
-  // console.log('assignmentsAvailalble: ', assignmentsAvailable)
-  // console.log('\n')
-
   const renderList = () => {
     return (
       <Card className="mt-2 mx-2">
@@ -117,7 +110,7 @@ const ProcAssigCrudByProcContainer = props => {
             </PrivateGroup>
           </div>
           {/* Lista de atrbuições de cargo */}
-          <ul className="list-group mb-0">
+          <ul className="list-group mb-1">
             {processAssignments && processAssignments.length > 0 ? (
               processAssignments.map(pa => (
                 <li className="list-group-item" key={pa.id}>
@@ -126,19 +119,26 @@ const ProcAssigCrudByProcContainer = props => {
                       assignments.find(assig => assig.id === pa.assignment_id).name
                     }`}</div>
                     <div className="col d-flex  d-flex align-items-center justify-content-end">
-                      <Button variant="danger" onClick={() => goToDeleteProcAssig(pa)}>
-                        Excluir
-                      </Button>
+                      <PrivateGroup permission="processAssignment_delete" course_id={course ? course.id : false}>
+                        <Button variant="danger" onClick={() => goToDeleteProcAssig(pa)}>
+                          Excluir
+                        </Button>
+                      </PrivateGroup>
                     </div>
                   </div>
                 </li>
               ))
             ) : (
-              <li className="list-inline-item" key="no-assig">
+              <li className="list-group-item" key="no-assig">
                 Sem cargos associados
               </li>
             )}
           </ul>
+          <div className="mb-1">
+            <LinkContainer to={`/process/read/${process ? process.id : ''}`}>
+              <Button>Pronto</Button>
+            </LinkContainer>
+          </div>
         </Card.Body>
       </Card>
     )
@@ -209,11 +209,8 @@ const ProcAssigCrudByProcContainer = props => {
   return (
     <React.Fragment>
       <ErrorAlert errorStore={errorStore} />
-
       {mode === 'list' ? renderList() : null}
-
       {mode === 'create' ? renderCreate() : null}
-
       {mode === 'delete' ? renderDelete() : null}
     </React.Fragment>
   )

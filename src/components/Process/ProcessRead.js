@@ -72,9 +72,11 @@ const ProcessRead = props => {
                       </li>
                     )}
                     <li className="list-inline-item" key="process-assig-update">
-                      <LinkContainer to={`/process-assignment/by-process/${process.id}`}>
-                        <Button>Editar cargos</Button>
-                      </LinkContainer>
+                      <PrivateGroup permission="processAssignment_create" course_id={process.course_id}>
+                        <LinkContainer to={`/process-assignment/by-process/${process.id}`}>
+                          <Button>Editar cargos</Button>
+                        </LinkContainer>
+                      </PrivateGroup>
                     </li>
                   </ul>
                 </dd>

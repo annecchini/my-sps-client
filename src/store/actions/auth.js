@@ -40,13 +40,16 @@ export const logoutUser = () => dispatch => {
 }
 
 //readProfile
-export const readProfile = () => dispatch => {
+export const readProfile = (options = {}) => dispatch => {
   spsApi
     .get('/v1/auth/profile')
     .then(res => {
       dispatch({ type: 'READ_PROFILE', payload: res.data })
     })
-    .catch(err => handleErrors(err, dispatch))
+    .catch(err => {
+      handleErrors(err, dispatch)
+      if (options.callbackFail) options.callbackFail()
+    })
 }
 
 //clearProfile
