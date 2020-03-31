@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { Form, Alert, Button } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
 
-import ErrorAlert from '../../components/Error/ErrorAlert'
 import { clearErrors } from '../../store/actions/error'
 import { listAssignment } from '../../store/actions/assignment'
 import { readProcess } from '../../store/actions/process'
@@ -13,13 +9,12 @@ import { selectProcessById } from '../../store/selectors/process'
 import { selectCourseByProcessIdV2 } from '../../store/selectors/course'
 import { selectProcessAssignmentByProcessIdV2 } from '../../store/selectors/processAssignment'
 import { convertObjetsToOptions } from '../../utils/store-helpers'
-import SelectField from '../../components/SelectField'
 import { createProcessAssignment, deleteProcessAssignment } from '../../store/actions/processAssigment'
-import PrivateGroup from '../../containers/Auth/PrivateGroup'
 import { convertErrorsFormat } from '../../utils/error-helpers'
+import ProcAssigCrudByProc from '../../components/ProcessAssignment/ProcAssigCrudByProc'
 
 const ProcAssigCrudByProcContainer = props => {
-  const { errorStore, process, course, processAssignments, assignments } = props
+  const { errorStore, processAssignments, assignments } = props
   const initialState = { process_id: props.match.params.process_id, assignment_id: '' }
 
   const [createData, setCreateData] = useState(initialState)
@@ -74,6 +69,7 @@ const ProcAssigCrudByProcContainer = props => {
   const onCancel = () => {
     setMode('list')
     setCreateData({ ...createData, assignment_id: '' })
+    setDeleteData({ ...createData, assignment_id: '' })
   }
 
   const onDeletePA = id => {
@@ -94,126 +90,27 @@ const ProcAssigCrudByProcContainer = props => {
     setMode('delete')
   }
 
-  // const allProps = {
-  //   ...props
-  // }
+  const allProps = {
+    ...props,
 
-  const renderList = () => {
-    return (
-      <Card className="mt-2 mx-2">
-        <Card.Header as="h5">Atribuições de cargo do processo</Card.Header>
-        <Card.Body>
-          {/* Lista de botões */}
-          <div className="mb-1">
-            <PrivateGroup permission="processAssignment_create" course_id={course ? course.id : false}>
-              <Button onClick={goToCreateProcAssig}>Nova atribuição de cargo</Button>
-            </PrivateGroup>
-          </div>
-          {/* Lista de atrbuições de cargo */}
-          <ul className="list-group mb-1">
-            {processAssignments && processAssignments.length > 0 ? (
-              processAssignments.map(pa => (
-                <li className="list-group-item" key={pa.id}>
-                  <div className="row">
-                    <div className="col d-flex align-items-center">{`${
-                      assignments.find(assig => assig.id === pa.assignment_id).name
-                    }`}</div>
-                    <div className="col d-flex  d-flex align-items-center justify-content-end">
-                      <PrivateGroup permission="processAssignment_delete" course_id={course ? course.id : false}>
-                        <Button variant="danger" onClick={() => goToDeleteProcAssig(pa)}>
-                          Excluir
-                        </Button>
-                      </PrivateGroup>
-                    </div>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="list-group-item" key="no-assig">
-                Sem cargos associados
-              </li>
-            )}
-          </ul>
-          <div className="mb-1">
-            <LinkContainer to={`/process/read/${process ? process.id : ''}`}>
-              <Button>Pronto</Button>
-            </LinkContainer>
-          </div>
-        </Card.Body>
-      </Card>
-    )
+    mode: mode,
+    setMode: setMode,
+
+    goToCreateProcAssig: goToCreateProcAssig,
+    createData: createData,
+    assignmentOptions: assignmentOptions,
+    onChange: onChange,
+    onSubmit: onSubmit,
+
+    goToDeleteProcAssig: goToDeleteProcAssig,
+    deleteData: deleteData,
+    onDeletePA: onDeletePA,
+
+    onCancel: onCancel,
+    errors: errors
   }
 
-  const renderCreate = () => {
-    return (
-      <Card className="mt-2 mx-2">
-        <Card.Header as="h5">Criar atribuição de cargo</Card.Header>
-        <Card.Body>
-          <Form noValidate onSubmit={onSubmit}>
-            {errors.id ? (
-              <Alert className="my-2" variant="danger">
-                {errors.id} || {errors.process_id}
-              </Alert>
-            ) : null}
-
-            <SelectField
-              label="Cargo"
-              name="assignment_id"
-              value={createData.assignment_id}
-              onChange={onChange}
-              options={assignmentOptions}
-              error={errors.assignment_id}
-            />
-
-            <Button variant="primary" type="submit">
-              Enviar
-            </Button>
-
-            <Button className="ml-1" variant="secondary" onClick={onCancel}>
-              Cancelar
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    )
-  }
-
-  const renderDelete = () => {
-    return (
-      <Card className="mt-2 mx-2" border="danger">
-        <Card.Header as="h5" className="bg-danger">
-          <span className="text-light"> Excluir atribuição de cargo </span>
-        </Card.Header>
-        <Card.Body>
-          <p>Tem certeza que deseja excluir a seguinte atribuição de cargo?</p>
-
-          <dl className="row mb-0">
-            <dt className="col-sm-3">Cargo:</dt>
-            <dd className="col-sm-9">{assignments.find(assig => assig.id === deleteData.assignment_id).name}</dd>
-          </dl>
-
-          <div className="mt-2">
-            <Button variant="danger" onClick={() => onDeletePA(deleteData.id)}>
-              Excluir
-            </Button>
-
-            <Button className="ml-1" variant="secondary" onClick={onCancel}>
-              Cancelar
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
-    )
-  }
-
-  return (
-    <React.Fragment>
-      <ErrorAlert errorStore={errorStore} />
-      {mode === 'list' ? renderList() : null}
-      {mode === 'create' ? renderCreate() : null}
-      {mode === 'delete' ? renderDelete() : null}
-    </React.Fragment>
-  )
+  return <ProcAssigCrudByProc {...allProps} />
 }
 
 //Put store-data on props

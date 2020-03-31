@@ -77,10 +77,11 @@ const ProcessListContainer = props => {
 
 //Put store-data on props
 const mapStateToProps = state => ({
+  authStore: state.authStore,
+  errorStore: state.errorStore,
   processStore: state.processStore,
   info: state.processStore.info,
-  processes: selectProcesses(state, { withCourse: true, withGraduationLevel: true, withAssignment: true }),
-  authStore: state.authStore
+  processes: selectProcesses(state, { withCourse: true, withGraduationLevel: true, withAssignment: true })
 })
 
 //Put actions on props

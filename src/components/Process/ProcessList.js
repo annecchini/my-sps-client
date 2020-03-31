@@ -7,9 +7,10 @@ import { checkNested } from '../../utils/checkNested'
 import MultiSelectFilter from '../MultiSelectFilter'
 import PrivateGroup from '../../containers/Auth/PrivateGroup'
 import PaginationGroup from '../../components/PaginationGroup'
+import ErrorAlert from '../../components/Error/ErrorAlert'
 
 const ProcessList = props => {
-  const { filters, tickFilter, clearFilters, info, changePage } = props
+  const { filters, tickFilter, clearFilters, info, changePage, errorStore } = props
   const processes = props.processes
 
   const listAllAppliedfilters = filters => {
@@ -26,6 +27,8 @@ const ProcessList = props => {
 
   return (
     <React.Fragment>
+      <ErrorAlert errorStore={errorStore} />
+
       <Card className="mt-2 mx-2">
         <Card.Header as="h5">Processos seletivos</Card.Header>
         <Card.Body>

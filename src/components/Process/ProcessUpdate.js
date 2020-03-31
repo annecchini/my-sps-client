@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, Alert, Form, Button } from 'react-bootstrap'
+import { Card, Alert, Form, Button, Breadcrumb } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import TextField from '../TextField'
 import TextAreaField from '../TextAreaField'
@@ -7,10 +8,26 @@ import SelectField from '../SelectField'
 import CheckboxField from '../CheckboxField'
 import ErrorAlert from '../Error/ErrorAlert'
 
-const ProcessCreate = props => {
+const ProcessUpdate = props => {
   const { onSubmit, updateData, onChange, onCheck, errors, courseOptions, errorStore } = props
+  const process = props.process || {}
+
   return (
     <React.Fragment>
+      <Breadcrumb>
+        <LinkContainer to="/">
+          <Breadcrumb.Item>Home</Breadcrumb.Item>
+        </LinkContainer>
+
+        <LinkContainer to={`/process/read/${process.id}`}>
+          <Breadcrumb.Item>{`Processo ${process.identifier}/${process.year}`}</Breadcrumb.Item>
+        </LinkContainer>
+
+        <LinkContainer to={`/process/update/${process.id}`}>
+          <Breadcrumb.Item active>Editar processo</Breadcrumb.Item>
+        </LinkContainer>
+      </Breadcrumb>
+
       <ErrorAlert errorStore={errorStore} />
 
       <Card className="mt-2 mx-2">
@@ -81,4 +98,4 @@ const ProcessCreate = props => {
   )
 }
 
-export default ProcessCreate
+export default ProcessUpdate
