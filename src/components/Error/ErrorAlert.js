@@ -13,6 +13,8 @@ const ErrorAlert = props => {
   useEffect(() => {
     if (!isEmpty(errorStore)) {
       setShow(true)
+    } else {
+      setShow(false)
     }
   }, [errorStore])
 
