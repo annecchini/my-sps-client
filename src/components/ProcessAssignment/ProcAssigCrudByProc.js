@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, Form, Alert, Button, Breadcrumb } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -6,7 +6,8 @@ import ErrorAlert from '../../components/Error/ErrorAlert'
 import SelectField from '../../components/SelectField'
 import PrivateGroup from '../../containers/Auth/PrivateGroup'
 
-const ProcAssigCrudByProc = props => {
+const ProcAssigCrudByProc = (props) => {
+  const { history, match } = props
   const { errorStore, process, course, processAssignments, assignments } = props
   const {
     mode,
@@ -20,7 +21,7 @@ const ProcAssigCrudByProc = props => {
     deleteData,
     onDeletePA,
     onCancel,
-    errors
+    errors,
   } = props
 
   const renderList = () => {
@@ -31,17 +32,17 @@ const ProcAssigCrudByProc = props => {
           {/* Lista de botões */}
           <div className="mb-1">
             <PrivateGroup permission="processAssignment_create" course_id={course ? course.id : false}>
-              <Button onClick={goToCreateProcAssig}>Nova atribuição de cargo</Button>
+              <Button onClick={() => history.push(`${match.url}#create`)}>Nova atribuição de cargo</Button>
             </PrivateGroup>
           </div>
           {/* Lista de atrbuições de cargo */}
           <ul className="list-group mb-1">
             {processAssignments && processAssignments.length > 0 ? (
-              processAssignments.map(pa => (
+              processAssignments.map((pa) => (
                 <li className="list-group-item" key={pa.id}>
                   <div className="row">
                     <div className="col d-flex align-items-center">{`${
-                      assignments.find(assig => assig.id === pa.assignment_id).name
+                      assignments.find((assig) => assig.id === pa.assignment_id).name
                     }`}</div>
                     <div className="col d-flex  d-flex align-items-center justify-content-end">
                       <PrivateGroup permission="processAssignment_delete" course_id={course ? course.id : false}>
@@ -107,14 +108,14 @@ const ProcAssigCrudByProc = props => {
     return (
       <Card className="mt-2 mx-2" border="danger">
         <Card.Header as="h5" className="bg-danger">
-          <span className="text-light"> Excluir atribuição de cargo </span>
+          <span className="text-light">Excluir atribuição de cargo </span>
         </Card.Header>
         <Card.Body>
           <p>Tem certeza que deseja excluir a seguinte atribuição de cargo?</p>
 
           <dl className="row mb-0">
             <dt className="col-sm-3">Cargo:</dt>
-            <dd className="col-sm-9">{assignments.find(assig => assig.id === deleteData.assignment_id).name}</dd>
+            <dd className="col-sm-9">{assignments.find((assig) => assig.id === deleteData.assignment_id).name}</dd>
           </dl>
 
           <div className="mt-2">
@@ -153,9 +154,7 @@ const ProcAssigCrudByProc = props => {
         ) : null}
 
         {mode === 'delete' ? (
-          <Breadcrumb.Item
-            active={mode === 'delete' ? true : false}
-          >{`Excluir excluir atribuição de cargo`}</Breadcrumb.Item>
+          <Breadcrumb.Item active={mode === 'delete' ? true : false}>{`Excluir atribuição de cargo`}</Breadcrumb.Item>
         ) : null}
       </Breadcrumb>
 

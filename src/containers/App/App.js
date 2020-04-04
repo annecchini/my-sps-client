@@ -16,6 +16,8 @@ import { setSpsApiToken } from '../../utils/api-helpers'
 import ProcessAssignmentRoutes from '../ProcessAssignment/ProcessAssignmentRoutes'
 import { clearErrors } from '../../store/actions/error'
 
+import Main from '../../containers/teste/Main'
+
 //Check token
 if (localStorage.token && typeof localStorage.token !== 'undefined') {
   //decode and load authStore
@@ -49,6 +51,8 @@ function App(props) {
 
             <Route path="/process" component={ProcessRoutes} />
             <Route path="/process-assignment" component={ProcessAssignmentRoutes} />
+
+            <Route path="/teste/by-proc/:process_id" component={Main} />
 
             <Route component={NotFound} />
           </Switch>
