@@ -14,13 +14,13 @@ import { convertErrorsFormat } from '../../utils/error-helpers'
 import ProcAssigCrudByProc from '../../components/ProcessAssignment/ProcAssigCrudByProc'
 
 const ProcAssigCrudByProcContainer = (props) => {
+  const { history } = props
   const { errorStore, processAssignments, assignments } = props
-  const initialState = { process_id: props.match.params.process_id, assignment_id: '' }
 
+  const initialState = { process_id: props.match.params.process_id, assignment_id: '' }
   const [createData, setCreateData] = useState(initialState)
   const [deleteData, setDeleteData] = useState(initialState)
   const [errors, setErrors] = useState({})
-  const [mode, setMode] = useState('list')
 
   //mostras apenas Assig sem processAssig
   const assignmentsAvailable = assignments.filter(
@@ -29,44 +29,15 @@ const ProcAssigCrudByProcContainer = (props) => {
   const assignmentOptions = convertObjetsToOptions(assignmentsAvailable, { label: 'name', value: 'id' })
   assignmentOptions.unshift({ label: 'Escolha o cargo', value: '' })
 
-  console.log('Carregando o componente...')
+  //Necessário para navegação por hash.
+  if (history.location.hash !== '#list' && history.location.hash !== '#create' && history.location.hash !== '#delete') {
+    console.log('alterei o hash')
+    props.history.location.hash = '#list'
+  }
 
+  //Buscar dados do servidor...
   useEffect(() => {
-    const atualHash = props.history.location.hash.substr(1)
-    const atualMode = mode
-
-    console.log('hash effect:')
-    console.log('hash antes: ', atualHash)
-    console.log('mode antes: ', atualMode)
-
-    if (atualHash !== atualMode) {
-      console.log('vou mudar')
-      switch (atualHash) {
-        case '':
-          props.history.location.hash = '#list'
-          setMode('list')
-          break
-        case 'list':
-          setMode('list')
-          break
-        case 'create':
-          setMode('create')
-          break
-        case 'delete':
-          setMode('delete')
-          break
-        default:
-          break
-      }
-    }
-
-    console.log('hash depois: ', props.history.location.hash)
-    console.log('mode depois: ', mode)
-  }, [props.history.location.hash])
-
-  //componentDidMount
-  useEffect(() => {
-    console.log('Buscando dados do servidor.')
+    console.log('Buscando dados do servidor...')
     props.clearErrors()
     props.listAssignment()
     props.readProcess(props.match.params.process_id, {
@@ -76,7 +47,7 @@ const ProcAssigCrudByProcContainer = (props) => {
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  //Pegar errors do store (onPropsUpdate)
+  //Pegar errors do store...
   useEffect(() => {
     const storeErrors =
       errorStore.data && errorStore.data.devMessage && errorStore.data.devMessage.errors
@@ -92,57 +63,38 @@ const ProcAssigCrudByProcContainer = (props) => {
     setCreateData({ ...createData, [e.target.name]: e.target.value })
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault()
+  const onSubmitCreate = (options = {}) => {
     props.createProcessAssignment(createData, {
       callbackOk: () => {
-        setMode('list')
-        setCreateData({ ...createData, assignment_id: '' })
+        setCreateData(initialState)
+        if (options.callbackOk) options.callbackOk()
       },
     })
   }
 
-  const onCancel = () => {
-    setMode('list')
-    setCreateData({ ...createData, assignment_id: '' })
-    setDeleteData({ ...createData, assignment_id: '' })
-  }
-
-  const onDeletePA = (id) => {
+  const onSubmitDelete = (id, options = {}) => {
     props.deleteProcessAssignment(id, {
       callbackOk: () => {
-        setMode('list')
+        setDeleteData(initialState)
+        if (options.callbackOk) options.callbackOk()
       },
     })
-  }
-
-  const goToCreateProcAssig = () => {
-    setCreateData(initialState)
-    setMode('create')
-  }
-
-  const goToDeleteProcAssig = (pa) => {
-    setDeleteData(pa)
-    setMode('delete')
   }
 
   const allProps = {
     ...props,
 
-    mode: mode,
-    setMode: setMode,
-
-    goToCreateProcAssig: goToCreateProcAssig,
+    initialState: initialState,
     createData: createData,
+    setCreateData: setCreateData,
     assignmentOptions: assignmentOptions,
     onChange: onChange,
-    onSubmit: onSubmit,
+    onSubmitCreate: onSubmitCreate,
 
-    goToDeleteProcAssig: goToDeleteProcAssig,
     deleteData: deleteData,
-    onDeletePA: onDeletePA,
+    setDeleteData: setDeleteData,
+    onSubmitDelete: onSubmitDelete,
 
-    onCancel: onCancel,
     errors: errors,
   }
 

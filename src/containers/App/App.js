@@ -16,7 +16,7 @@ import { setSpsApiToken } from '../../utils/api-helpers'
 import ProcessAssignmentRoutes from '../ProcessAssignment/ProcessAssignmentRoutes'
 import { clearErrors } from '../../store/actions/error'
 
-import Main from '../../containers/teste/Main'
+import Main from '../../containers/teste01/Main'
 
 //Check token
 if (localStorage.token && typeof localStorage.token !== 'undefined') {
@@ -27,7 +27,7 @@ if (localStorage.token && typeof localStorage.token !== 'undefined') {
   setSpsApiToken(localStorage.token)
   store.dispatch(
     readProfile({
-      callbackFail: () => store.dispatch(clearErrors())
+      callbackFail: () => store.dispatch(clearErrors()),
     })
   )
 

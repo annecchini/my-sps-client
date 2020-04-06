@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Card, Form, Alert, Button, Breadcrumb } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -10,19 +10,53 @@ const ProcAssigCrudByProc = (props) => {
   const { history, match } = props
   const { errorStore, process, course, processAssignments, assignments } = props
   const {
-    mode,
-    setMode,
-    goToCreateProcAssig,
+    initialState,
     createData,
+    setCreateData,
     assignmentOptions,
     onChange,
-    onSubmit,
-    goToDeleteProcAssig,
+    onSubmitCreate,
     deleteData,
-    onDeletePA,
-    onCancel,
+    setDeleteData,
+    onSubmitDelete,
     errors,
   } = props
+
+  const onClickGoCreate = () => {
+    setCreateData(initialState)
+    history.push(`${match.url}#create`)
+  }
+
+  const onClickGoDelete = (pa) => {
+    setDeleteData(pa)
+    history.push(`${match.url}#delete`)
+  }
+
+  const onClickGoList = () => {
+    setCreateData(initialState)
+    setDeleteData(initialState)
+    if (history.length > 1) history.goBack()
+    else history.push(`${match.url}#list`)
+  }
+
+  const onClickCreate = (e) => {
+    e.preventDefault()
+    onSubmitCreate({
+      callbackOk: () => {
+        if (history.length > 1) history.goBack()
+        else history.push(`${match.url}#list`)
+      },
+    })
+  }
+
+  const onClickDelete = (id) => {
+    onSubmitDelete(id, {
+      callbackOk: () => {
+        if (history.length > 1) history.goBack()
+        else history.push(`${match.url}#list`)
+      },
+    })
+  }
 
   const renderList = () => {
     return (
@@ -30,13 +64,13 @@ const ProcAssigCrudByProc = (props) => {
         <Card.Header as="h5">Atribuições de cargo do processo</Card.Header>
         <Card.Body>
           {/* Lista de botões */}
-          <div className="mb-1">
+          <div className="mb-2">
             <PrivateGroup permission="processAssignment_create" course_id={course ? course.id : false}>
-              <Button onClick={() => history.push(`${match.url}#create`)}>Nova atribuição de cargo</Button>
+              <Button onClick={() => onClickGoCreate()}>Nova atribuição de cargo</Button>
             </PrivateGroup>
           </div>
           {/* Lista de atrbuições de cargo */}
-          <ul className="list-group mb-1">
+          <ul className="list-group mb-2">
             {processAssignments && processAssignments.length > 0 ? (
               processAssignments.map((pa) => (
                 <li className="list-group-item" key={pa.id}>
@@ -46,7 +80,7 @@ const ProcAssigCrudByProc = (props) => {
                     }`}</div>
                     <div className="col d-flex  d-flex align-items-center justify-content-end">
                       <PrivateGroup permission="processAssignment_delete" course_id={course ? course.id : false}>
-                        <Button variant="danger" onClick={() => goToDeleteProcAssig(pa)}>
+                        <Button variant="danger" onClick={() => onClickGoDelete(pa)}>
                           Excluir
                         </Button>
                       </PrivateGroup>
@@ -60,7 +94,7 @@ const ProcAssigCrudByProc = (props) => {
               </li>
             )}
           </ul>
-          <div className="mb-1">
+          <div className="mb-2">
             <LinkContainer to={`/process/read/${process ? process.id : ''}`}>
               <Button>Pronto</Button>
             </LinkContainer>
@@ -75,7 +109,7 @@ const ProcAssigCrudByProc = (props) => {
       <Card className="mt-2 mx-2">
         <Card.Header as="h5">Criar atribuição de cargo</Card.Header>
         <Card.Body>
-          <Form noValidate onSubmit={onSubmit}>
+          <Form noValidate onSubmit={(e) => onClickCreate(e)}>
             {errors.id ? (
               <Alert className="my-2" variant="danger">
                 {errors.id} || {errors.process_id}
@@ -95,7 +129,7 @@ const ProcAssigCrudByProc = (props) => {
               Enviar
             </Button>
 
-            <Button className="ml-1" variant="secondary" onClick={onCancel}>
+            <Button className="ml-1" variant="secondary" onClick={() => onClickGoList()}>
               Cancelar
             </Button>
           </Form>
@@ -113,17 +147,21 @@ const ProcAssigCrudByProc = (props) => {
         <Card.Body>
           <p>Tem certeza que deseja excluir a seguinte atribuição de cargo?</p>
 
-          <dl className="row mb-0">
-            <dt className="col-sm-3">Cargo:</dt>
-            <dd className="col-sm-9">{assignments.find((assig) => assig.id === deleteData.assignment_id).name}</dd>
-          </dl>
+          {deleteData.assignment_id ? (
+            <dl className="row mb-0">
+              <dt className="col-sm-3">Cargo:</dt>
+              <dd className="col-sm-9">{assignments.find((assig) => assig.id === deleteData.assignment_id).name}</dd>
+            </dl>
+          ) : (
+            <p>Atribuição de cargo não selecionada.</p>
+          )}
 
           <div className="mt-2">
-            <Button variant="danger" onClick={() => onDeletePA(deleteData.id)}>
+            <Button variant="danger" onClick={() => onClickDelete(deleteData.id)}>
               Excluir
             </Button>
 
-            <Button className="ml-1" variant="secondary" onClick={onCancel}>
+            <Button className="ml-1" variant="secondary" onClick={() => onClickGoList()}>
               Cancelar
             </Button>
           </div>
@@ -145,23 +183,27 @@ const ProcAssigCrudByProc = (props) => {
           }`}</Breadcrumb.Item>
         </LinkContainer>
 
-        <Breadcrumb.Item active={mode === 'list' ? true : false} onClick={() => setMode('list')}>
+        <Breadcrumb.Item active={history.location.hash === '#list' ? true : false} onClick={() => onClickGoList()}>
           {`Atribuições de cargo`}
         </Breadcrumb.Item>
 
-        {mode === 'create' ? (
-          <Breadcrumb.Item active={mode === 'create' ? true : false}>{`Nova atribuição de cargo`}</Breadcrumb.Item>
+        {history.location.hash === '#create' ? (
+          <Breadcrumb.Item
+            active={history.location.hash === '#create' ? true : false}
+          >{`Nova atribuição de cargo`}</Breadcrumb.Item>
         ) : null}
 
-        {mode === 'delete' ? (
-          <Breadcrumb.Item active={mode === 'delete' ? true : false}>{`Excluir atribuição de cargo`}</Breadcrumb.Item>
+        {history.location.hash === '#delete' ? (
+          <Breadcrumb.Item
+            active={history.location.hash === '#delete' ? true : false}
+          >{`Excluir atribuição de cargo`}</Breadcrumb.Item>
         ) : null}
       </Breadcrumb>
 
       <ErrorAlert errorStore={errorStore} />
-      {mode === 'list' ? renderList() : null}
-      {mode === 'create' ? renderCreate() : null}
-      {mode === 'delete' ? renderDelete() : null}
+      {history.location.hash === '#list' ? renderList() : null}
+      {history.location.hash === '#create' ? renderCreate() : null}
+      {history.location.hash === '#delete' ? renderDelete() : null}
     </React.Fragment>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 
 import { clearErrors } from '../../store/actions/error'
 import { listAssignment } from '../../store/actions/assignment'
@@ -18,18 +18,17 @@ import Create from './Create'
 import Delete from './Delete'
 import NotFound from '../../components/Layout/NotFound'
 
-const Main = props => {
+const Main = (props) => {
   const { errorStore, processAssignments, assignments } = props
   const initialState = { process_id: props.match.params.process_id, assignment_id: '' }
 
-  const [createData, setCreateData] = useState(initialState)
-  const [deleteData, setDeleteData] = useState(initialState)
+  const [createData, setCreateData] = useState(initialState) // eslint-disable-line
+  const [deleteData, setDeleteData] = useState(initialState) // eslint-disable-line
   const [errors, setErrors] = useState({})
-  const [mode, setMode] = useState('list')
 
   //mostras apenas Assig sem processAssig
   const assignmentsAvailable = assignments.filter(
-    assig => !processAssignments.map(pa => pa.assignment_id).includes(assig.id)
+    (assig) => !processAssignments.map((pa) => pa.assignment_id).includes(assig.id)
   )
   const assignmentOptions = convertObjetsToOptions(assignmentsAvailable, { label: 'name', value: 'id' })
   assignmentOptions.unshift({ label: 'Escolha o cargo', value: '' })
@@ -42,7 +41,7 @@ const Main = props => {
     props.readProcess(props.match.params.process_id, {
       withCourse: true,
       withProcessAssignment: true,
-      withAssignment: false
+      withAssignment: false,
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -62,14 +61,14 @@ const Main = props => {
     errors: errors,
     assignmentOptions: assignmentOptions,
     createData: createData,
-    deleteData: deleteData
+    deleteData: deleteData,
   }
 
   return (
     <Switch>
-      <Route exact path={`${props.match.path}`} render={props => <List {...allProps} />} />
-      <Route exact path={`${props.match.path}/create`} render={props => <Create {...allProps} />} />
-      <Route exact path={`${props.match.path}/delete`} render={props => <Delete {...allProps} />} />
+      <Route exact path={`${props.match.path}`} render={(props) => <List {...allProps} />} />
+      <Route exact path={`${props.match.path}/create`} render={(props) => <Create {...allProps} />} />
+      <Route exact path={`${props.match.path}/delete`} render={(props) => <Delete {...allProps} />} />
       <Route component={NotFound} />
     </Switch>
   )
@@ -90,7 +89,7 @@ const mapActionsToProps = {
   listAssignment,
   readProcess,
   createProcessAssignment,
-  deleteProcessAssignment
+  deleteProcessAssignment,
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(Main)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react'
 
-const Delete = props => {
+const Delete = (props) => {
   const { history } = props
 
   // componentDidMount() {
@@ -36,7 +36,7 @@ const Delete = props => {
         console.log('tentei voltar.')
       }
     })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   console.log(props)
   return <div>Delete component.</div>
